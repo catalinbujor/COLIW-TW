@@ -1,0 +1,37 @@
+li {
+    float: left;
+}
+
+a {
+    display: block;
+    padding: 8px;
+    background-color:white;
+}
+li a {
+    transition: width 1s;
+
+    width:100%;
+}
+
+li a:hover {
+    background-color: red;
+    color: white;
+    width:150%;
+    position: relative;
+}
+
+ul{
+    list-style-type: none;
+    align-content: flex-end;
+}
+
+.topbar{
+    display: flex;
+    justify-content: center;
+    align-content: flex-start;
+
+}
+
+body{
+    background: floralwhite;
+}
