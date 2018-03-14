@@ -1,0 +1,25 @@
+{
+  "name": "coliw-tw-",
+  "version": "1.0.0",
+  "description": "In mod normal, accesul la Web se realizeaza pe baza unui browser. Se doreste experimentarea unei interactiuni Web in linia de comandă, punandu-se la dispozitie o platforma extensibila capabila sa ofere suport pentru realizarea de mash-up-uri exclusiv cu ajutorul unui set de mini-comenzi, in stilul celor oferite de bash. Utilizatorul va putea accesa servicii de interes via comenzi precum \"web slideshare upload &lt;URL>\" sau \"web twitter follow &lt;utilizator>\" sau \"web gmail -tag:Important -since:2018-01-01 > msg.RSS\". De asemenea, se vor putea realiza mash-up-uri si/sau pipe-uri -- de exemplu, \"web flickr photos -tag:Tux -first | web instagram update user\" pentru actualizarea profilului Instagram pe baza unei fotografii preluate de pe situl Flickr ori \"web join rss &lt;URL1> &lt;URL2> -where &lt;conditie> -unique | web wordpress publish &lt;blog> -as HTML\" pentru a obtine o lista de fluxuri de stiri in vederea publicarii in format HTML pe un blog (aici, Wordpress, insa se pot oferi extensii si pentru altele: Medium, Tumblr,...). Interfata in linie de comanda poate fi oferita si via o extensie de navigator Web. Bonus: recurgerea la microservicii Web.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/catalinbujor/COLIW-TW-.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/catalinbujor/COLIW-TW-/issues"
+  },
+  "homepage": "https://github.com/catalinbujor/COLIW-TW-#readme",
+  "dependencies": {
+    "flickrapi": "^0.6.0",
+    "http": "0.0.0",
+    "jQuery": "^1.7.4",
+    "oauth-signature": "^1.5.0"
+  }
+}
