@@ -1,77 +1,18 @@
-.flex-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap : nowrap;
-    justify-content: center;
-    align-items: baseline;
-    align-content: space-between;
-    position: sticky;
-  }
-  
 body{
-    background-color: #deb887;
+    background-color: grey;
     font-family: Roboto;
 }
 
-div{
-    background-color:royalblue;
+.cmd-line{
+    display: block;
 }
-.flex-container>div:hover{
-    width:60%;
-    cursor: pointer;
+.user-stl{
+    background-color: yellowgreen;
+    display: inline;
 }
-
-.flex-container>div {
-    background-color: DodgerBlue;
-    color: white;
-    width: 20%;
-    text-align: center;
-    line-height: 2em;
-    font-size: 1.3em;
-    transition: width 1s,background-color 0.3s;
-    transition-timing-function:ease-in-out;
-
-    box-shadow: 0 5px 5px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-  }
-
-.flex-container>div:hover{
-    
-    box-shadow: 0 16px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+.input-stl{
+    background-color: white;
+    display: inline;
 }
-
-.flex-container>div.gmail{
-    background-color: #c71610;
-}
-
-.flex-container>div.gmail:hover{
-    background-color: #f2a60c;
-
-}
-
-.flex-container>div.facebook{
-    background-color: 	#3b5998;
-    color:	#dfe3ee;
-}
-
-.flex-container>div.facebook:hover{
-    background-color: 	#dfe3ee;
-    color:	#8b9dc3;
-}
-.flex-container>div.flickr{
-    background-color: #0063dc;
-}
-.flex-container>div.instagram{
-    background-color: #c1558b;
-}
-
-.flex-container>div.instagram:hover{
-    background-color: 	#8a49a1;
-}
-
-.flex-container>div.twitter:hover{
-    background-color: 		#d4d8d4;
-    color:	#326ada;
-}
-
 
 
