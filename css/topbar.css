@@ -18,6 +18,7 @@ div{
 }
 .flex-container>div:hover{
     width:60%;
+    cursor: pointer;
 }
 
 .flex-container>div {
