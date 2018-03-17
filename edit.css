@@ -1,0 +1,37 @@
+h1 {
+    color: #ffffff;
+    font-size: 50px;
+}
+
+
+main > header,article {
+    margin-top: 2.5em;
+    background-color: white;
+    padding-left: auto;
+    padding-right: auto;
+    padding-top: auto;
+    padding-bottom: auto;
+    -webkit-border-radius: initial;
+    -moz-border-radius: initial;
+    border-radius: initial;
+    font-size: 25px;
+}
+
+body {
+    font-family: Verdana, sans-serif;
+    line-height: 1.5;
+    color: #000000;
+    background-image: url("img.jpg");
+    background-color: #cccccc;
+    width: 90%;
+    margin: 0px auto;
+    font-size: 1em;
+}
+
+
+section
+{
+  font-size: 25px;
+    color: blue;
+}
+
