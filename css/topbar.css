@@ -1,0 +1,18 @@
+body{
+    background-color: grey;
+    font-family: Roboto;
+}
+
+.cmd-line{
+    display: block;
+}
+.user-stl{
+    background-color: yellowgreen;
+    display: inline;
+}
+.input-stl{
+    background-color: white;
+    display: inline;
+}
+
+
