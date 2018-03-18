@@ -2,52 +2,70 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="edit.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
 </head>
 <body>
 <header>
     <h1 align="center">Lista comenzi</h1>
 </header>
 
-<article>
-    <header> <h2>web twitter follow "utilizator"</h2> </header>
-    <section>
-        <ul>
-            <li><strong>Aceasta comanda ofera accesul la serviciul de follow a unui utilizator specificat pentru platforma twitter.</li>
-        </ul>
-    </section>
-</article>
-<article>
-    <header>
-        <h2>web join rss <URL1> <URL2> -where <conditie> -unique | web wordpress publish <blog> -as HTML </h2>
-        <section>
-            <ul>
-                <li>
-                    <strong>Prin intermediul acestei comenzi utilizatorul obtine o lista de fluxuri de stiri in vederea publicarii in format HTML pe un blog (ex:Wordpress).</strong>
-                </li>
-            </ul>
-        </section>
-    </header>
-</article>
-<article>
-    <header><h2>web flickr photos -tag:Tux -first | web instagram update user</h2>
-        <section>
-            <ul>
-                <li><strong>Prin intermediul acestei comenzi utilizatorul isi actualizeaza fotografia de profil de pe Instagram pe baza unei fotografii preluate de pe Flickr.</strong></stromg></li>
-            </ul>
-        </section>
-    </header>
-</article>
-<article><header><h2>web gmail -tag:Important -since:2018-01-01 > msg.RSS</h2></header>
+<div class="flex-container" >
 
-    <section>
-        <ul>
-            <li>
-                <strong>
-                    Cu ajutorul acestei comenzi utilizatorul isi poate accesa email-ul si poate solicita diverse informatii cu privire la acesta.
-                </strong>
-            </li>
-        </ul>
-    </section>
-</article>
+<div class="dropdown">
+    <button class="dropbtn">Twitter</button>
+    <div class="dropdown-content">
+          <a href="#">Unfollow</a>
+          <a href="#">Follow</a>
+    </div>
+</div>
+
+
+
+
+<div class="dropdown">
+    <button class="dropbtn">Instagram</button>
+    <div class="dropdown-content">
+        <a href="#">Update photo</a>
+        <a href="#">Follow</a>
+    </div>
+</div>
+
+
+
+    <div class="dropdown">
+        <button class="dropbtn">Gmail</button>
+        <div class="dropdown-content">
+            <a href="#">Update photo</a>
+            <a href="#">Follow</a>
+        </div>
+    </div>
+
+
+
+
+    <div class="dropdown">
+        <button class="dropbtn">Flickr</I></button>
+        <div class="dropdown-content">
+            <a href="#">Update photo</a>
+            <a href="#">Follow</a>
+        </div>
+    </div>
+
+
+
+    <div class="dropdown">
+        <button class="dropbtn">Wordpress</button>
+        <div class="dropdown-content">
+            <a href="#">Update photo</a>
+            <a href="#">Follow</a>
+        </div>
+    </div>
+
+
+</div>
+
 </body>
 </html>
