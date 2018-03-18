@@ -4,15 +4,40 @@ body{
 }
 
 .cmd-line{
-    display: block;
-}
-.user-stl{
-    background-color: yellowgreen;
-    display: inline;
-}
-.input-stl{
-    background-color: white;
-    display: inline;
+    display: flex;
 }
 
+#big-box{
+    display: inline;
+}
+.user-stl{
+    background-color: #212121; 
+    display :flex;
+    min-width: 10%;
+    align-items: center;
+    justify-content: center;
+}
+.input-stl{
+    background-color:#BDBDBD;
+    display: flex;
+    width: 100%;
+}
+
+.username{
+    font-size:1.1em;
+    color:#F5F5F5;
+}
+
+.puncte{
+    font-size: 1.3em;
+    color:whitesmoke;
+}
+input[type=text], select {
+    width: 1000%;
+    margin: 8px 0;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
