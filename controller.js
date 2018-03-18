@@ -31,7 +31,7 @@ function keyPressed(e) {
 }
 
 function computeDisplayMessage() {
-    return "Eu sunt un mesaj!";
+    return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
 }
 
 function removeEvents (element) {
