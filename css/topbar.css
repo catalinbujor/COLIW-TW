@@ -6,7 +6,19 @@ body{
 .output-msg{
     color: red;
     text-align:center;
+    animation-duration: 1.4s;
+    animation-name: slidein;
 }
+@keyframes slidein {
+    from {
+      margin-top: 10%;
+    }
+  
+    to {
+      margin-top: 0%;
+    }
+  }
+
 
 .cmd-line{
     display: block;

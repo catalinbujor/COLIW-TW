@@ -18,7 +18,7 @@ function keyPressed(e) {
         fchild.children[0].setAttribute("id", "user-box");
         fchild.children[1].setAttribute("id", "input-line");
         cln.children[1].setAttribute("id", "messenger");
-       document.getElementById("big-box").appendChild(cln);
+        document.getElementById("big-box").appendChild(cln);
         var newCmd = document.getElementById("input-line");
         newCmd.children[0].disabled = false;
         // add events
