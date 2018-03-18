@@ -5,6 +5,7 @@ body{
 
 .output-msg{
     color: red;
+    text-align:center;
 }
 
 .cmd-line{
@@ -27,7 +28,7 @@ body{
 }
 
 .input-stl{
-    background-color:#004589;
+    background-color:#001e3b;
     display: flex;
     width: 100%;
 }
