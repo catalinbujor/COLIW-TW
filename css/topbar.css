@@ -3,9 +3,12 @@ body{
     font-family: Roboto;
 }
 
+.output-msg{
+    color: red;
+}
 
 .cmd-line{
-    display: flex;
+    display: block;
 }
 
 #big-box{
@@ -18,6 +21,11 @@ body{
     align-items: center;
     justify-content: center;
 }
+
+.spanner{
+    display: flex;
+}
+
 .input-stl{
     background-color:#004589;
     display: flex;
