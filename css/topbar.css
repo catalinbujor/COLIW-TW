@@ -1,5 +1,5 @@
 body{
-    background-color: #000000;
+    background-color: #212121;
     font-family: Roboto;
 }
 
@@ -28,7 +28,7 @@ body{
     display: inline;
 }   
 .user-stl{
-    background-color: #212121; 
+    background-color: #000000;
     display :flex;
     min-width: 10%;
     align-items: center;
@@ -40,7 +40,7 @@ body{
 }
 
 .input-stl{
-    background-color: #1e0a21;
+    background-color:#33691E;
     display: flex;
     width: 100%;
 }
@@ -51,12 +51,12 @@ body{
 
 .username{
     font-size:1.1em;
-    color:#F5F5F5;
+    color: #33691E;
 }
 
 .puncte{
     font-size: 1.3em;
-    color:whitesmoke;
+    color:#33691E;
 }
 input[type=text], select {
     width: 1000%;
