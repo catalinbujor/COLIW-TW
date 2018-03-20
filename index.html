@@ -2,16 +2,15 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="./css/topbar.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"><head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <title>COliW</title>
         <meta name="description" content="Command line of the web">
         <meta name="author" content="Maxim Nestian Bujor">
     <link rel="stylesheet" type="text/css" href="./css/topbar.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
     <link rel="icon" href="images/favicon.ico" type="image/gif" >
 </head>
 <body>
-    <span>Web Technology</span>
+    
     <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 
@@ -66,11 +65,18 @@
     </div>
 
     <div id="main">
-        <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+        <span style="font-size:1.2em;cursor:pointer" onclick="openNav()">&#9776;</span>
 
 
 
 <ul id="big-box">
+        <span class = "unselectable titlec">
+        <span class = "logo " > COliW</span>
+        <span class = "title ">Web Technology</span>
+
+        <div class = "descr">plm</div>
+        </span>
+        
     <li class="cmd-line">
         <div class="spanner">
             <div id="user-box" class="user-stl">
@@ -79,7 +85,7 @@
             </div>
 
             <div id="input-line" class="input-stl">
-                <input type="text" maxlength="250" class="input-bar">
+                <input type="text"  maxlength="64" class="input-bar">
             </div>
         </div>
         <div id="messenger" class="output-msg"></div>

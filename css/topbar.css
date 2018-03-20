@@ -1,5 +1,5 @@
 body{
-    background-color: #212121;
+    background-color: #795548;
     font-family: Roboto;
 }
 .output-msg{
@@ -69,18 +69,6 @@ input[type=text], select {
     color:transparent;
 }
 
-.sidenav {
-    height: 100%; /* 100% Full-height */
-    width: 0; /* 0 width - change this with JavaScript */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Stay on top */
-    top: 0; /* Stay at the top */
-    left: 0;
-    background-color: #111; /* Black*/
-    overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 60px; /* Place content 60px from the top */
-    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-}
 
 /* The navigation menu links */
 .sidenav {
@@ -93,13 +81,13 @@ input[type=text], select {
     background-color: #111;
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 60px;
+    padding-top: 1em;
 }
 
 .sidenav a {
-    padding: 8px 8px 8px 32px;
+    padding: 0.4em 0.4em 0.4em 1em;
     text-decoration: none;
-    font-size: 25px;
+    font-size: 1.2em;
     color: #818181;
     display: block;
     transition: 0.3s;
@@ -112,19 +100,19 @@ input[type=text], select {
 .sidenav .closebtn {
     position: absolute;
     top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+    right: 10%;
+    font-size: 2em;
+    margin-left: 3em;;
 }
 
 #main {
     transition: margin-left .5s;
-    padding: 16px;
+    padding: 2em;
 }
 
 @media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-    .sidenav a {font-size: 18px;}
+    .sidenav {padding-top: 1em;}
+    .sidenav a {font-size: 1em;}
 }
 
 
@@ -149,4 +137,8 @@ input[type=text], select {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+.titlec{
+    display:flex;
+    justify-content: center;
 }
