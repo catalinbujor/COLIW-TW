@@ -1,4 +1,5 @@
 var cmd = document.getElementById("input-line");
+document.getElementById("input-line").children[0].focus();
 
 cmd.addEventListener("keypress", keyPressed);
 
@@ -14,6 +15,7 @@ function keyPressed(e) {
 
         document.getElementById("messenger").removeAttribute("id");
         var cln = itm.cloneNode(true);
+
         var fchild = cln.children[0];
         fchild.children[0].setAttribute("id", "user-box");
         fchild.children[1].setAttribute("id", "input-line");
