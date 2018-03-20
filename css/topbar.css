@@ -120,3 +120,20 @@ input[type=text], select {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
 }
+
+
+.lista_comenzi
+{
+    list-style-type: none;
+}
+
+.listaComenzi
+{
+    color: #f1f1f1;
+}
+
+.lista_parametrii
+{
+    color: #a19c9c;
+}
+
