@@ -48,7 +48,7 @@ var bgculori=['#B388FF','#283593','#8C9EFF','#009688','#00ACC1','#CDDC39','#FFE0
 '#607D8B','#EFEBE9','#84FFFF','#311B92'];
 
 function openNav() {
-    document.getElementById("mySidenav").style.width = "11em";
+    document.getElementById("mySidenav").style.width = "13em";
     document.getElementById("main").style.marginLeft = "11em";
     document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 
