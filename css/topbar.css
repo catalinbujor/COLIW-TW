@@ -46,7 +46,7 @@ body{
 }
 
 .input-stl .input-bar{
-    border: 2px solid #dadada;
+    outline: none;
 }
 
 .username{
