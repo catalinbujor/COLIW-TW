@@ -29,6 +29,7 @@ body{
     min-width: 12%;
     align-items: center;
     justify-content: center;
+    border-radius: 3em;
 }
 .spanner{
     display: flex;
@@ -37,6 +38,7 @@ body{
     background-color:#212121;
     display: flex;
     width: 100%;
+    border-radius: 3em;
 }
 
 .username{
@@ -47,6 +49,10 @@ body{
 .puncte{
     font-size: 1.3em;
     color:#33691E;
+}
+
+.input-bar {
+    padding-left: 3%;
 }
 input[type=text], select {
     width: 1000%;
@@ -136,4 +142,11 @@ input[type=text], select {
 {
     color: #a19c9c;
 }
-
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
