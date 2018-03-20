@@ -1,10 +1,10 @@
 body{
-    background-color: #001e3b;
+    background-color: #000000;
     font-family: Roboto;
 }
 
 .output-msg{
-    color: red;
+    color: #dadada;
     text-align:center;
     animation-duration: 1.4s;
     animation-name: slidein;
@@ -40,9 +40,13 @@ body{
 }
 
 .input-stl{
-    background-color:#001e3b;
+    background-color: #1e0a21;
     display: flex;
     width: 100%;
+}
+
+.input-stl .input-bar{
+    border: 2px solid #dadada;
 }
 
 .username{
