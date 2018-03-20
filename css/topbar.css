@@ -4,15 +4,15 @@ body{
 }
 .output-msg{
     color: #dadada;
-    text-align:center;
+    text-align:left;
     animation-duration: 1.4s;
     animation-name: slidein;
+    width:110%;
 }
 @keyframes slidein {
     from {
       margin-top: 10%;
     }
-
     to {
       margin-top: 0%;
     }
@@ -26,7 +26,7 @@ body{
 .user-stl{
     background-color:#212121;
     display :flex;
-    min-width: 10%;
+    min-width: 12%;
     align-items: center;
     justify-content: center;
 }
@@ -56,14 +56,12 @@ input[type=text], select {
     display: flex;
     border-radius: 4px;
     box-sizing: border-box;
-
+    outline: none;
     font-size:1em;
     font-family: Roboto;
     text-shadow: 0 0 0 #E8EAF6;
     color:transparent;
 }
-
-
 
 .sidenav {
     height: 100%; /* 100% Full-height */
