@@ -47,6 +47,7 @@ function removeEvents (element) {
 function openNav() {
     document.getElementById("mySidenav").style.width = "13em";
     document.getElementById("main").style.marginLeft = "11em";
+    //document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
     document.body.style.backgroundColor = "#5e5e5e";
     document.getElementById("logo").style.color = "rgb(172, 172, 171)";
 }
@@ -55,6 +56,7 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
+    //document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length) )];
     document.body.style.backgroundColor = "#292929";
     document.getElementById("logo").style.color = "#acacab";
 }
