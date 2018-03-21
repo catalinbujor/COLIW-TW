@@ -173,7 +173,7 @@ input[type=text], select {
     color: #111111;
 }
 
-/* Safari 4.0 - 8.0 */
+/* Title animation */
 @-webkit-keyframes mymove {
     from {right: 25em;}
     to {right: 0em;}
