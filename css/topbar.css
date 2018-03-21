@@ -27,21 +27,21 @@ body{
     display: inline;
 }
 .user-stl{
-    background-color:#212121;
     display :flex;
-    min-width: 12%;
+    min-width: 9%;
     align-items: center;
     justify-content: center;
-    border-radius: 3em;
+
 }
 .spanner{
     display: flex;
+    background-color: #212121;
+    border-radius: 25px;
 }
 .input-stl{
-    background-color:#212121;
     display: flex;
     width: 100%;
-    border-radius: 3em;
+
 }
 
 .username{
@@ -55,9 +55,10 @@ body{
 }
 
 .input-bar {
-    padding-left: 3%;
+
 }
 input[type=text], select {
+    caret-color: #acacab;
     width: 1000%;
     margin: 8px 0;
     background: transparent;
