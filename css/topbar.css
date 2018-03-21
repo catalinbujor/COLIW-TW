@@ -166,8 +166,8 @@ input[type=text], select {
 
 .logo {
     position: relative;
-    -webkit-animation-name: mymove; /* Safari 4.0 - 8.0 */
-    -webkit-animation-duration: 5s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-name: mymove;
+    -webkit-animation-duration: 5s;
     animation-name: mymove;
     animation-duration: 3s;
     color: #111111;
