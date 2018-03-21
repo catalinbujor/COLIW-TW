@@ -92,7 +92,7 @@ input[type=text], select {
     text-decoration: none;
     font-size: 1.2em;
     color: #818181;
-    display: block;
+    display: flex;
     transition: 0.3s;
 }
 
@@ -160,3 +160,28 @@ input[type=text], select {
 @keyframes slide {
     100% { left: 0; }
 }
+
+
+
+
+.logo {
+    position: relative;
+    -webkit-animation-name: mymove; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 5s; /* Safari 4.0 - 8.0 */
+    animation-name: mymove;
+    animation-duration: 3s;
+    color: #111111;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes mymove {
+    from {right: 25em;}
+    to {right: 0em;}
+}
+
+@keyframes mymove {
+    from {right: 25em;}
+    to {right: 0em;}
+}
+
+
