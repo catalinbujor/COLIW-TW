@@ -149,20 +149,6 @@ input[type=text], select {
     font-size: 1.5em;
 }
 
-#slide {
-    position: absolute;
-    left: -6em;
-    width: 6em;
-    height: 6em;
-    animation: slide 0.5s forwards;
-    animation-delay: 2s;
-}
-@keyframes slide {
-    100% { left: 0; }
-}
-
-
-
 
 .logo {
     position: relative;
