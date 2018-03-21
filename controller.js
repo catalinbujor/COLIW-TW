@@ -44,20 +44,18 @@ function removeEvents (element) {
     element.parentNode.replaceChild(clone, element);
 }
 
-var bgculori=['#B388FF','#283593','#8C9EFF','#009688','#00ACC1','#CDDC39','#FFE082','#795548','#BDBDBD','#E64A19','#EA80FC','#F48FB1',
-'#607D8B','#EFEBE9','#84FFFF','#311B92'];
-
 function openNav() {
     document.getElementById("mySidenav").style.width = "13em";
     document.getElementById("main").style.marginLeft = "11em";
-    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
-
+    document.body.style.backgroundColor = "#5e5e5e";
+    document.getElementById("logo").style.color = "rgb(172, 172, 171)";
 }
 
 /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
-    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length) )];
+    document.body.style.backgroundColor = "#292929";
+    document.getElementById("logo").style.color = "#acacab";
 }
 

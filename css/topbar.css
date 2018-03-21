@@ -1,5 +1,5 @@
 body{
-    background-color: #795548;
+    background-color: #292929;
     font-family: Roboto;
 }
 .output-msg{
@@ -14,12 +14,12 @@ body{
 }
 @keyframes slidein {
     from {
-      margin-top: 10%;
+        margin-top: 10%;
     }
     to {
-      margin-top: 0%;
+        margin-top: 0%;
     }
-  }
+}
 .cmd-line{
     display: block;
 }
@@ -46,12 +46,12 @@ body{
 
 .username{
     font-size:1.1em;
-    color: #33691E;
+    color: #acacab;
 }
 
 .puncte{
     font-size: 1.3em;
-    color:#33691E;
+    color:#acacab;
 }
 
 .input-bar {
@@ -72,6 +72,18 @@ input[type=text], select {
     color:transparent;
 }
 
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #111; /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 1em; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
 
 /* The navigation menu links */
 .sidenav {
@@ -145,21 +157,22 @@ input[type=text], select {
     display:flex;
     justify-content: center;
 
-    
+
     font-size: 1.5em;
 }
 
 
-.logo {
+#logo {
     position: relative;
     -webkit-animation-name: mymove;
     -webkit-animation-duration: 5s;
     animation-name: mymove;
     animation-duration: 3s;
-    color: #111111;
+    color: #acacab;
+    padding-bottom: 1em;
 }
 
-/* Title animation */
+
 @-webkit-keyframes mymove {
     from {right: 25em;}
     to {right: 0em;}
