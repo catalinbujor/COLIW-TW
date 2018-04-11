@@ -5,7 +5,40 @@ cmd.addEventListener("keypress", keyPressed);
 
 function keyPressed(e) {
     if (e.keyCode === 13) { // enter
-        var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length-1];
+        var inputCmd = document.getElementById("input-line").children[0].value;
+        if (inputCmd === "login flickr") {
+            // LOGIN FLICKR
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/flickr/auth";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send();
+        }
+        else if (inputCmd === "flickr upload") {
+            // LOGIN FLICKR
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/flickr/upload";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "application/json");
+            request.send();
+        }
+
+
+        var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
         document.getElementById("messenger").innerHTML = computeDisplayMessage();
 
         removeEvents(document.getElementById("input-line"));
@@ -28,7 +61,7 @@ function keyPressed(e) {
         newCmd.children[0].value = '';
         newCmd.children[0].focus();
 
-        document.getElementById("messenger").innerHTML="";
+        document.getElementById("messenger").innerHTML = "";
     }
 }
 
@@ -36,7 +69,7 @@ function computeDisplayMessage() {
     return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
 }
 
-function removeEvents (element) {
+function removeEvents(element) {
     var clone = element.cloneNode();
     while (element.firstChild) {
         clone.appendChild(element.lastChild);
@@ -44,8 +77,8 @@ function removeEvents (element) {
     element.parentNode.replaceChild(clone, element);
 }
 
-var bgculori=['#B388FF','#283593','#8C9EFF','#009688','#00ACC1','#CDDC39','#FFE082','#795548','#BDBDBD','#E64A19','#EA80FC','#F48FB1',
-'#607D8B','#EFEBE9','#84FFFF','#311B92'];
+var bgculori = ['#B388FF', '#283593', '#8C9EFF', '#009688', '#00ACC1', '#CDDC39', '#FFE082', '#795548', '#BDBDBD', '#E64A19', '#EA80FC', '#F48FB1',
+    '#607D8B', '#EFEBE9', '#84FFFF', '#311B92'];
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "13em";
@@ -58,6 +91,6 @@ function openNav() {
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
-    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length) )];
+    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 }
 

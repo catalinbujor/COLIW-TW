@@ -20,6 +20,8 @@
     "flickrapi": "^0.6.0",
     "http": "0.0.0",
     "jQuery": "^1.7.4",
-    "oauth-signature": "^1.5.0"
+    "npm": "^5.8.0",
+    "oauth-signature": "^1.5.0",
+    "prompt": "^1.0.0"
   }
 }

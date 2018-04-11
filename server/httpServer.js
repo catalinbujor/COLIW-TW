@@ -1,4 +1,5 @@
 const http = require("http"),
+    flickr = require("./coliw"),
     fs = require("fs");
 
 const hostname = "127.0.0.1";
@@ -16,6 +17,13 @@ http.createServer((request, response) => {
             jsHandler(request, response);
             break;
         default:
+            if (request.url.indexOf("oauth_verifier") > -1) {
+                let tokens = {};
+                tokens.oauth_verifier = request.url.substring(request.url.indexOf("oauth_verifier")+15);
+                global.flickr.opts.exchange(tokens, (err, res) => {
+                    console.log(err);
+                });
+            }
             htmlHandler(request, response);
     }
 }).listen(port, hostname, () => {
