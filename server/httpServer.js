@@ -1,0 +1,38 @@
+const http = require("http"),
+    fs = require("fs");
+
+const hostname = "127.0.0.1";
+const port = 3000;
+const htmlContent = fs.readFileSync("../index.html", {encoding: "utf8"});
+const cssContent = fs.readFileSync("../css/topbar.css", {encoding: "utf8"});
+const jsContent = fs.readFileSync("../controller.js", {encoding: "utf8"});
+
+http.createServer((request, response) => {
+    switch (request.url) {
+        case "/css/topbar.css":
+            cssHandler(request, response);
+            break;
+        case "/controller.js":
+            jsHandler(request, response);
+            break;
+        default:
+            htmlHandler(request, response);
+    }
+}).listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+function cssHandler(request, response) {
+    response.writeHead(200, {"Content-Type": "text/css"});
+    response.end(cssContent);
+}
+
+function jsHandler(request, response) {
+    response.writeHead(200, {"Content-Type": "text/javascript"});
+    response.end(jsContent);
+}
+
+function htmlHandler(request, response) {
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.end(htmlContent);
+}
