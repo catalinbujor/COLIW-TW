@@ -2,10 +2,25 @@ var cmd = document.getElementById("input-line");
 document.getElementById("input-line").children[0].focus();
 
 cmd.addEventListener("keypress", keyPressed);
+cmd.onkeydown = Arrows;
 
+var lastCmd = [], ind = -1;
+
+function Arrows(e) {
+    if (e.keyCode === 38) { // arrow up
+        document.getElementById("input-line").children[0].value = lastCmd[ind];
+        newCmd.children[0].focus();
+        ind--;
+        if(ind < 0) {
+            ind = lastCmd.length - 1;
+        }
+    }
+}
 function keyPressed(e) {
     if (e.keyCode === 13) { // enter
         var inputCmd = document.getElementById("input-line").children[0].value;
+        lastCmd.push(inputCmd);
+        ind = lastCmd.length - 1;
         if (inputCmd === "login flickr") {
             // LOGIN FLICKR
 
@@ -21,8 +36,8 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "application/json");
             request.send();
         }
-        else if (inputCmd === "flickr upload") {
-            // LOGIN FLICKR
+        else if (inputCmd.indexOf("flickr upload") === 0) {
+            // UPLOAD FLICKR
 
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/flickr/upload";
@@ -33,8 +48,11 @@ function keyPressed(e) {
 
             request.open("POST", url, true);
 
-            request.setRequestHeader("Content-Type", "application/json");
-            request.send();
+            request.setRequestHeader("Content-Type", "text/plain");
+            let data = JSON.stringify({
+                "path": inputCmd.substring(inputCmd.indexOf("flickr upload") + 14)
+            });
+            request.send(data);
         }
 
 
@@ -58,6 +76,7 @@ function keyPressed(e) {
         newCmd.children[0].disabled = false;
         // add events
         newCmd.addEventListener("keypress", keyPressed);
+        newCmd.onkeydown = Arrows;
         newCmd.children[0].value = '';
         newCmd.children[0].focus();
 
