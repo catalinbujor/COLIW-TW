@@ -23,19 +23,19 @@ exports.auth = function (req, res) {
     res.end();
 };
 
-exports.upload = function (req, res) {
+exports.upload = function (req, res, path) {
     let uploadOptions = {
         photos: [{
             title: "testare",
             tags: [
                 "testare"
             ],
-            photo: "D:\\COLIW-TW-\\images\\test.jpg"
+            photo: path
         }]
     };
 
     Flickr.upload(uploadOptions, global.flickr.opts, (err, res) => {
-        console.log(err);
+        console.log(err, res);
     });
 
     let resp = {
