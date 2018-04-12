@@ -55,6 +55,10 @@ http.createServer(function (req, res) {
                     flickrHandler.upload(req, res, obj.path);
                     break;
                 }
+                case "/flickr/tag": {
+                    flickrHandler.tag(req, res);
+                    break;
+                }
                 case "/twitter": {
                     twitterHandler(req, res);
                     break;

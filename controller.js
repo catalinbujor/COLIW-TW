@@ -54,7 +54,21 @@ function keyPressed(e) {
             });
             request.send(data);
         }
+        else if (inputCmd.indexOf("flickr tag") === 0) {
+            // tag opt FLICKR
 
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/flickr/tag";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+        }
 
         var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
         document.getElementById("messenger").innerHTML = computeDisplayMessage();
