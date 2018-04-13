@@ -50,7 +50,7 @@ function keyPressed(e) {
 
             request.setRequestHeader("Content-Type", "text/plain");
             let data = JSON.stringify({
-                "path": inputCmd.substring(inputCmd.indexOf("flickr upload") + 14)
+                "path": inputCmd.substring(14)
             });
             request.send(data);
         }
@@ -69,6 +69,45 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
         }
+        else if (inputCmd.indexOf("login twitter") === 0) {
+            // LOGIN twitter
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/twitter/auth";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                if (data.uri) {
+                    window.location.replace(data.uri);
+                }
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+        }
+        else if (inputCmd.indexOf("twitter tweet") === 0) {
+            // twitter tweet
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/twitter/tweet";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                console.log("TWITTER TWEET: " + data);
+            }
+
+            request.open("POST", url, true);
+            var verifier = window.location.href.substring(window.location.href.indexOf("verifier") + 9);
+            let data = JSON.stringify({
+                status: inputCmd.substring(14),
+                verifier: verifier
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+
 
         var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
         document.getElementById("messenger").innerHTML = computeDisplayMessage();

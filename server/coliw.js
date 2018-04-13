@@ -12,7 +12,7 @@ http.createServer(function (req, res) {
         data += chunk;
     });
     req.on("end", () => {
-        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:63342');
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
 
         // Request methods you wish to allow
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -59,12 +59,16 @@ http.createServer(function (req, res) {
                     flickrHandler.tag(req, res);
                     break;
                 }
-                case "/twitter": {
-                    twitterHandler(req, res);
+                case "/twitter/auth": {
+                    twitterHandler.auth(req, res);
                     break;
                 }
-                case "/instagram": {
-                    instagramHandler(req, res);
+                case "/twitter/tweet": {
+                    twitterHandler.tweet(req, res, obj.verifier, obj.status);
+                    break;
+                }
+                case "/instagram/auth": {
+                    instagramHandler.auth(req, res);
                     break;
                 }
                 case "/wordpress": {
