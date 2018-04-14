@@ -18,16 +18,20 @@ http.createServer((request, response) => {
             jsHandler(request, response);
             break;
         default:
-            if (request.url.indexOf("oauth_verifier") > -1 && request.url.indexOf("oauth_token") === -1) {
-                let tokens = {};
-                tokens.oauth_verifier = request.url.substring(request.url.indexOf("oauth_verifier")+15);
-                global.flickr.opts.exchange(tokens, (err, res) => {
-                    console.log(err);
-                });
-            }
             if (request.url.indexOf("oauth_verifier") > -1 && request.url.indexOf("oauth_token") > -1) {
-                twitter.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
+                let verifier = request.url.substring(request.url.indexOf("verifier") + 9);
+                if (verifier.length !== 16) {
+                    twitter.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
+                }
+                else {
+                    let tokens = {};
+                    tokens.oauth_verifier = request.url.substring(request.url.indexOf("oauth_verifier") + 15);
+                    global.flickr.opts.exchange(tokens, (err, res) => {
+                        console.log(err);
+                    });
+                }
             }
+
             htmlHandler(request, response);
     }
 }).listen(port, hostname, () => {
