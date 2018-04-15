@@ -28,34 +28,65 @@ exports.auth = function (req, res) {
     });
 };
 
-exports.tweet = function (req, res, verifier, status) {
-        let oauth =
+exports.tweet = function (req, res, status) {
+    let oauth =
             {
                 consumer_key: config.twitter_api_key,
                 consumer_secret: config.twitter_api_secret,
                 token: global.twitter.access.oauth_token,
                 token_secret: global.twitter.access.oauth_token_secret
             },
-            url = "https://api.twitter.com/1.1/statuses/update.json";
+        url = "https://api.twitter.com/1.1/statuses/update.json";
 
-            let title = {
-                    status: status
-                };
+    let body = {
+        status: status
+    };
 
-            request.post({url: url, oauth: oauth, qs: title, json: true}, function (e, r, user) {
-                let resp = {
-                    status: 1,
-                    title: status
-                };
-                if (typeof user.errors !== "undefined") {
-                    resp.status = 0;
-                    resp.errors = user.errors;
-                }
-                let data = JSON.stringify(resp);
+    request.post({url: url, oauth: oauth, qs: body, json: true}, function (e, r, user) {
+        let resp = {
+            status: 1,
+            title: status
+        };
+        if (typeof user.errors !== "undefined") {
+            resp.status = 0;
+            resp.errors = user.errors;
+        }
+        let data = JSON.stringify(resp);
 
-                res.writeHead(200, {"content-type": "application/json"});
-                res.end(data);
-            })
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+    })
+};
+
+exports.message = function (req, res, user, text) {
+    let oauth =
+            {
+                consumer_key: config.twitter_api_key,
+                consumer_secret: config.twitter_api_secret,
+                token: global.twitter.access.oauth_token,
+                token_secret: global.twitter.access.oauth_token_secret
+            },
+        url = "https://api.twitter.com/1.1/direct_messages/new.json";
+
+    let event = {
+        "screen_name": user,
+        "text": text
+
+    };
+
+    request.post({url: url, oauth: oauth, qs: event, json: true}, function (e, r, user) {
+        let resp = {
+            status: 1
+        };
+        if (typeof user.errors !== "undefined") {
+            resp.status = 0;
+            resp.errors = user.errors;
+        }
+        let data = JSON.stringify(resp);
+
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+    })
 };
 
 exports.lets_verify = function (verifier) {
@@ -72,5 +103,6 @@ exports.lets_verify = function (verifier) {
         let qs = require("querystring");
         let perm_data = qs.parse(body);
         global.twitter.access = perm_data || {};
+        console.log(perm_data);
     });
 };

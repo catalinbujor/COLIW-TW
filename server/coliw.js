@@ -45,7 +45,6 @@ http.createServer(function (req, res) {
             catch(e) {
                 console.error(e);
             }
-
             switch (req.url) {
                 case "/flickr/auth": {
                     flickrHandler.auth(req, res);
@@ -64,7 +63,11 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/twitter/tweet": {
-                    twitterHandler.tweet(req, res, obj.verifier, obj.status);
+                    twitterHandler.tweet(req, res, obj.status);
+                    break;
+                }
+                case "/twitter/message": {
+                    twitterHandler.message(req, res, obj.user, obj.text);
                     break;
                 }
                 case "/instagram/auth": {

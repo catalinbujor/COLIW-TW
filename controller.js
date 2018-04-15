@@ -107,6 +107,30 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+        else if (inputCmd.indexOf("twitter message") === 0) {
+            // twitter tweet
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/twitter/message";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                console.log("TWITTER message: " + data);
+            }
+
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                user: inputCmd.split(" ")[2],
+                text: inputCmd.substring(inputCmd.indexOf(inputCmd.split(" ")[2]) + inputCmd.split(" ")[2].length + 1)
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+
+
+
+
+
+
 
 
         var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
