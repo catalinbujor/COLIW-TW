@@ -1,12 +1,12 @@
 const config = require("./config");
 const request = require("request");
-let qs = require("querystring");
+const qs = require("querystring");
 
 global.twitter = {};
 
 exports.auth = function (req, res) {
     let oauth = {
-            callback: "http://localhost:3000",
+            callback: "http://localhost:3000/twitter/callback",
             consumer_key: config.twitter_api_key,
             consumer_secret: config.twitter_api_secret
         },
@@ -78,6 +78,36 @@ exports.message = function (req, res, user, text) {
         let resp = {
             status: 1
         };
+        if (typeof user.errors !== "undefined") {
+            resp.status = 0;
+            resp.errors = user.errors;
+        }
+        let data = JSON.stringify(resp);
+
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+    })
+};
+
+exports.get = function (req, res) {
+    let oauth =
+            {
+                consumer_key: config.twitter_api_key,
+                consumer_secret: config.twitter_api_secret,
+                token: global.twitter.access.oauth_token,
+                token_secret: global.twitter.access.oauth_token_secret
+            },
+        url = "https://api.twitter.com/1.1/direct_messages.json";
+
+    let event = {
+        "count": 3
+    };
+
+    request.get({url: url, oauth: oauth, qs: event, json: true}, function (e, r, user) {
+        let resp = {
+            status: 1
+        };
+        console.error(user);
         if (typeof user.errors !== "undefined") {
             resp.status = 0;
             resp.errors = user.errors;

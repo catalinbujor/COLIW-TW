@@ -5,7 +5,7 @@ const Flickr = require("flickrapi"),
     flickrOptions = {
         api_key: config.flickr_api_key,
         secret: config.flickr_api_secret,
-        callback: "http://localhost:3000",
+        callback: "http://localhost:3000/flickr/callback",
         permissions: "write"
     };
 
@@ -17,12 +17,13 @@ exports.auth = function (req, res) {
     };
     let data = JSON.stringify(resp);
     res.writeHead(200, {"content-type": "application/json"});
-    res.write(data);
-    Flickr.authenticate(flickrOptions, (err, res) => global.flickr.client = res);
+    Flickr.authenticate(flickrOptions, (err, res) => {
+        global.flickr.client = res
+    });
     setTimeout(() => {
         global.flickr.opts = flickrOptions;
     }, 3000);
-    res.end();
+    res.end(data);
 };
 
 exports.upload = function (req, res, path) {
@@ -35,10 +36,9 @@ exports.upload = function (req, res, path) {
             photo: path
         }]
     };
-
-    Flickr.upload(uploadOptions, global.flickr.opts, (err, res) => {
-        console.log(err, res);
-    });
+        Flickr.upload(uploadOptions, global.flickr.opts, (err, res) => {
+            console.log(err, res);
+        });
 
     let resp = {
         "flickr": 1
