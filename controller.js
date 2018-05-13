@@ -96,6 +96,7 @@ function keyPressed(e) {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 console.log("TWITTER TWEET: " + data);
+                document.getElementById("messenger").innerHTML = "Successfully tweeted!";
             }
 
             request.open("POST", url, true);
@@ -125,7 +126,22 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+        else if (inputCmd.indexOf("twitter get") === 0) {
+            // twitter get
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/twitter/get";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                console.log("TWITTER get: " + data);
+            }
 
+            request.open("POST", url, true);
+            // let data = JSON.stringify({
+            // });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send("");
+        }
 
 
 

@@ -9,23 +9,6 @@ const htmlContent = fs.readFileSync("../index.html", {encoding: "utf8"});
 const cssContent = fs.readFileSync("../css/topbar.css", {encoding: "utf8"});
 const jsContent = fs.readFileSync("../controller.js", {encoding: "utf8"});
 
-let FlickrStrategy = require("passport-flickr");
-const passport = require("passport");
-const config = require("./handlers/config.json");
-
-passport.use(new FlickrStrategy.Strategy({
-        consumerKey: config.flickr_api_key,
-        consumerSecret: config.flickr_api_secret,
-        callbackURL: "http://127.0.0.1/3000"
-    },
-    function (token, tokenSecret, profile, done) {
-        User.findOrCreate({flickrId: profile.id}, function (err, user) {
-            return done(err, user);
-        });
-    }
-));
-let auth = passport.authenticate('flickr');
-
 http.createServer((request, response) => {
     if (request.url.indexOf("/flickr/callback") === 0) {
         let tokens = {};
