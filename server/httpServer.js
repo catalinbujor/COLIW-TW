@@ -2,7 +2,6 @@ const http = require("http"),
     flickr = require("./coliw"),
     twitter = require("./handlers/twitter"),
     fs = require("fs");
-
 const hostname = "127.0.0.1";
 const port = 3000;
 const htmlContent = fs.readFileSync("../index.html", {encoding: "utf8"});

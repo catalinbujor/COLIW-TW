@@ -1,6 +1,7 @@
 let http = require("http"),
     flickrHandler = require("./handlers/flickr"),
     twitterHandler = require("./handlers/twitter"),
+    tumblrHandler = require("./handlers/tumblr"),
     gmailHandler = require("./handlers/gmail"),
     instagramHandler = require("./handlers/instagram"),
     slideshareHandler = require("./handlers/slideshare"),
@@ -60,6 +61,13 @@ http.createServer(function (req, res) {
                 }
                 case "/twitter/auth": {
                     twitterHandler.auth(req, res);
+                    break;
+                }
+
+                // TUMBLR
+                case "/tumblr/auth":
+                {
+                    tumblrHandler.auth(req,res);
                     break;
                 }
                 case "/twitter/tweet": {
