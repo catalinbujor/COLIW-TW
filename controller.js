@@ -191,9 +191,6 @@ function keyPressed(e) {
 
 
 
-
-        var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
-        document.getElementById("messenger").innerHTML = computeDisplayMessage();
 function create_box(msg) {
     var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
     document.getElementById("messenger").innerHTML = msg;
