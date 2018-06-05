@@ -78,6 +78,10 @@ http.createServer(function (req, res) {
                     wordpressHandler(req, res);
                     break;
                 }
+                case "/gmail/auth": {
+                    gmailHandler.auth(req, res);
+                    break;
+                }
                 case "/gmail": {
                     gmailHandler(req, res);
                     break;
