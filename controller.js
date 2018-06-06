@@ -107,7 +107,7 @@ function keyPressed(e) {
                     data ="Cannot tweet right now! Try again later";
                 }
                 else data = "Nice tweet : "+data.message;
-                makeChildBoxes(data);
+                create_box(data);
                 console.log(data.status);
             }
             
@@ -164,7 +164,7 @@ function keyPressed(e) {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 data = JSON.parse(data);
-                makeChildBoxes(data.data);
+                create_box(data.data);
             }
 
             request.open("POST", url, true);
@@ -211,7 +211,7 @@ function closeNav() {
     document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 }
 
-function makeChildBoxes(data){
+function create_box(data){
     var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
         
     document.getElementById("messenger").innerHTML =  computeDisplayMessage(data);

@@ -67,7 +67,7 @@ listLabels : function (auth,req,res)  {
       console.log('Labels:');
       labels.forEach((label) => {
         console.log(`- ${label.name}`);
-        labels_list += ` ${label.name} \n\r`;
+        labels_list += `- ${label.name} \n\r`;
       });
     } else {
         labels_list='No labels found.';
