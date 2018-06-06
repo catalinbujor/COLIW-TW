@@ -2,7 +2,9 @@ const config = require("./config");
 const request = require("request");
 const qs = require("querystring");
 
-global.twitter = {};
+global.twitter = {
+    "access": {}
+};
 
 exports.auth = function (req, res) {
     let oauth = {
@@ -47,10 +49,11 @@ exports.tweet = function (req, res, status) {
             status: 1,
             title: status
         };
-        if (typeof user.errors !== "undefined") {
+        if ((user && user.errors) || e) {
             resp.status = 0;
-            resp.errors = user.errors;
+            resp.errors = (e) ? e : user.errors;
         }
+
         let data = JSON.stringify(resp);
 
         res.writeHead(200, {"content-type": "application/json"});
@@ -78,9 +81,9 @@ exports.message = function (req, res, user, text) {
         let resp = {
             status: 1
         };
-        if (typeof user.errors !== "undefined") {
+        if ((user && user.errors) || e) {
             resp.status = 0;
-            resp.errors = user.errors;
+            resp.errors = (e) ? e : user.errors;
         }
         let data = JSON.stringify(resp);
 
@@ -108,9 +111,9 @@ exports.get = function (req, res) {
             status: 1
         };
         console.error(user);
-        if (typeof user.errors !== "undefined") {
+        if ((user && user.errors) || e) {
             resp.status = 0;
-            resp.errors = user.errors;
+            resp.errors = (e) ? e : user.errors;
         }
         let data = JSON.stringify(resp);
 

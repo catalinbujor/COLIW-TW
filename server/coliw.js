@@ -70,6 +70,10 @@ http.createServer(function (req, res) {
                     twitterHandler.message(req, res, obj.user, obj.text);
                     break;
                 }
+                case "/twitter/get": {
+                    twitterHandler.get(req, res);
+                    break;
+                }
                 case "/instagram/auth": {
                     instagramHandler.auth(req, res);
                     break;

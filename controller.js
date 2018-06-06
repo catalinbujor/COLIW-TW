@@ -81,8 +81,7 @@ function keyPressed(e) {
                 if (data.uri) {
                     window.location.replace(data.uri);
                 }
-            }
-            
+            };
             request.open("POST", url, true);
 
             request.setRequestHeader("Content-Type", "text/plain");
@@ -94,23 +93,25 @@ function keyPressed(e) {
             var url = "http://localhost:8000/twitter/tweet";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
                 console.log("TWITTER TWEET: " + data);
-                try {
-                    data = JSON.parse(data);
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tweet operation was successful!";
                 }
-                catch (e) {
-                    console.log(e);
+                else if (data.errors.code === "ENOTFOUND") {
+                    msg = "Tweet operation requires authentication!";
                 }
-                if(data.status === 0){
-                    console.log(data.status);
-                    data ="Cannot tweet right now! Try again later";
+                else if (data.errors instanceof Array && data.errors.length > 0 && data.errors[0].code === 89) {
+                    msg = "Your token has expired! Please login again."
                 }
-                else data = "Nice tweet : "+data.message;
-                makeChildBoxes(data);
-                console.log(data.status);
-            }
-            
+                else {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+            };
+
             request.open("POST", url, true);
             var verifier = window.location.href.substring(window.location.href.indexOf("verifier") + 9);
             let data = JSON.stringify({
@@ -122,13 +123,28 @@ function keyPressed(e) {
         }
         else if (inputCmd.indexOf("twitter message") === 0) {
             // twitter tweet
+
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/twitter/message";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
                 console.log("TWITTER message: " + data);
-            }
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Message operation was successful!";
+                }
+                else if (data.errors.code === "ENOTFOUND") {
+                    msg = "Message operation requires authentication!";
+                }
+                else if (data.errors instanceof Array && data.errors.length > 0 && data.errors[0].code === 89) {
+                    msg = "Your token has expired! Please login again."
+                }
+                else {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                create_box(msg);
+            };
 
             request.open("POST", url, true);
             let data = JSON.stringify({
@@ -137,6 +153,36 @@ function keyPressed(e) {
             });
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
+        }
+        else if (inputCmd.indexOf("twitter get") === 0) {
+            var request = new XMLHttpRequest();
+            // twitter get
+            var url = "http://localhost:8000/twitter/get";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                console.log("TWITTER get: " + data);
+                var msg = null;
+                    msg = "Get operation was successful!";
+                if (data.status === 1) {
+                }
+                    msg = "Get operation requires authentication!";
+                else if (data.errors.code === "ENOTFOUND") {
+                }
+                else if (data.errors instanceof Array && data.errors.length > 0 && data.errors[0].code === 89) {
+                    msg = "Your token has expired! Please login again."
+                }
+                else {
+                }
+                  msg = "Oops, an errors has occured! Please retry."
+                create_box(msg);
+            };
+
+            request.open("POST", url, true);
+            // let data = JSON.stringify({
+            // });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send("");
         }
         else if (inputCmd.indexOf("login gmail") === 0) {
             // LOGIN gmail
@@ -150,13 +196,15 @@ function keyPressed(e) {
                 if (data.uri) {
                     window.location.replace(data.uri);
                 }
-            }
+            };
             
             request.open("POST", url, true);
 
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
+
         }
+        
         else if (inputCmd.indexOf("gmail label") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/gmail/label";
@@ -175,9 +223,32 @@ function keyPressed(e) {
 
 
 
+function create_box(msg) {
+    var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
+    document.getElementById("messenger").innerHTML = msg;
 
+    removeEvents(document.getElementById("input-line"));
+    document.getElementById("input-line").children[0].disabled = true;
+    document.getElementById("input-line").removeAttribute("id");
+    document.getElementById("user-box").removeAttribute("id");
 
-    }
+    document.getElementById("messenger").removeAttribute("id");
+    var cln = itm.cloneNode(true);
+
+    var fchild = cln.children[0];
+    fchild.children[0].setAttribute("id", "user-box");
+    fchild.children[1].setAttribute("id", "input-line");
+    cln.children[1].setAttribute("id", "messenger");
+    document.getElementById("big-box").appendChild(cln);
+    var newCmd = document.getElementById("input-line");
+    newCmd.children[0].disabled = false;
+    // add events
+    newCmd.addEventListener("keypress", keyPressed);
+    newCmd.onkeydown = Arrows;
+    newCmd.children[0].value = '';
+    newCmd.children[0].focus();
+
+    document.getElementById("messenger").innerHTML = "";
 }
 
 function computeDisplayMessage(rez) {
