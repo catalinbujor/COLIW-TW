@@ -79,11 +79,16 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/gmail/auth": {
+                    console.log("In coliw.js auth");
                     gmailHandler.auth(req, res);
+                    console.log("Dupa coliw auth");
                     break;
                 }
-                case "/gmail": {
-                    gmailHandler(req, res);
+                case "/gmail/label": {
+                    var labelate = gmailHandler.listLabels(gmailHandler.oauth2Client,req,res);
+                    labelate.then(function(fulfilled){
+                        //console.log(fulfilled);
+                    });
                     break;
                 }
                 case "/slideshare": {
