@@ -163,18 +163,19 @@ function keyPressed(e) {
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
                 console.log("TWITTER get: " + data);
                 var msg = null;
-                    msg = "Get operation was successful!";
+                msg = "Get operation was successful!";
                 if (data.status === 1) {
-                }
                     msg = "Get operation requires authentication!";
+                }
+
                 else if (data.errors.code === "ENOTFOUND") {
                 }
                 else if (data.errors instanceof Array && data.errors.length > 0 && data.errors[0].code === 89) {
                     msg = "Your token has expired! Please login again."
                 }
                 else {
+                    msg = "Oops, an errors has occured! Please retry."
                 }
-                  msg = "Oops, an errors has occured! Please retry."
                 create_box(msg);
             };
 
@@ -197,14 +198,14 @@ function keyPressed(e) {
                     window.location.replace(data.uri);
                 }
             };
-            
+
             request.open("POST", url, true);
 
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
 
         }
-        
+
         else if (inputCmd.indexOf("gmail label") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/gmail/label";
@@ -212,7 +213,7 @@ function keyPressed(e) {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 data = JSON.parse(data);
-                makeChildBoxes(data.data);
+                create_box(data.data);
             }
 
             request.open("POST", url, true);
@@ -220,7 +221,8 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
         }
-
+    }
+}
 
 
 function create_box(msg) {
@@ -250,6 +252,7 @@ function create_box(msg) {
 
     document.getElementById("messenger").innerHTML = "";
 }
+
 
 function computeDisplayMessage(rez) {
     if(rez)
@@ -282,31 +285,3 @@ function closeNav() {
     document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 }
 
-function makeChildBoxes(data){
-    var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
-        
-    document.getElementById("messenger").innerHTML =  computeDisplayMessage(data);
-
-    removeEvents(document.getElementById("input-line"));
-    document.getElementById("input-line").children[0].disabled = true;
-    document.getElementById("input-line").removeAttribute("id");
-    document.getElementById("user-box").removeAttribute("id");
-
-    document.getElementById("messenger").removeAttribute("id");
-    var cln = itm.cloneNode(true);
-
-    var fchild = cln.children[0];
-    fchild.children[0].setAttribute("id", "user-box");
-    fchild.children[1].setAttribute("id", "input-line");
-    cln.children[1].setAttribute("id", "messenger");
-    document.getElementById("big-box").appendChild(cln);
-    var newCmd = document.getElementById("input-line");
-    newCmd.children[0].disabled = false;
-    // add events
-    newCmd.addEventListener("keypress", keyPressed);
-    newCmd.onkeydown = Arrows;
-    newCmd.children[0].value = '';
-    newCmd.children[0].focus();
-
-    document.getElementById("messenger").innerHTML = "";
-}
