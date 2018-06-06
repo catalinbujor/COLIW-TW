@@ -82,7 +82,7 @@ function keyPressed(e) {
                     window.location.replace(data.uri);
                 }
             }
-
+            
             request.open("POST", url, true);
 
             request.setRequestHeader("Content-Type", "text/plain");
@@ -96,8 +96,21 @@ function keyPressed(e) {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 console.log("TWITTER TWEET: " + data);
+                try {
+                    data = JSON.parse(data);
+                }
+                catch (e) {
+                    console.log(e);
+                }
+                if(data.status === 0){
+                    console.log(data.status);
+                    data ="Cannot tweet right now! Try again later";
+                }
+                else data = "Nice tweet : "+data.message;
+                makeChildBoxes(data);
+                console.log(data.status);
             }
-
+            
             request.open("POST", url, true);
             var verifier = window.location.href.substring(window.location.href.indexOf("verifier") + 9);
             let data = JSON.stringify({
@@ -125,43 +138,51 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+        else if (inputCmd.indexOf("login gmail") === 0) {
+            // LOGIN gmail
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/gmail/auth";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                if (data.uri) {
+                    window.location.replace(data.uri);
+                }
+            }
+            
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+        }
+        else if (inputCmd.indexOf("gmail label") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/gmail/label";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                makeChildBoxes(data.data);
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+        }
 
 
 
 
 
-
-
-
-        var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
-        document.getElementById("messenger").innerHTML = computeDisplayMessage();
-
-        removeEvents(document.getElementById("input-line"));
-        document.getElementById("input-line").children[0].disabled = true;
-        document.getElementById("input-line").removeAttribute("id");
-        document.getElementById("user-box").removeAttribute("id");
-
-        document.getElementById("messenger").removeAttribute("id");
-        var cln = itm.cloneNode(true);
-
-        var fchild = cln.children[0];
-        fchild.children[0].setAttribute("id", "user-box");
-        fchild.children[1].setAttribute("id", "input-line");
-        cln.children[1].setAttribute("id", "messenger");
-        document.getElementById("big-box").appendChild(cln);
-        var newCmd = document.getElementById("input-line");
-        newCmd.children[0].disabled = false;
-        // add events
-        newCmd.addEventListener("keypress", keyPressed);
-        newCmd.onkeydown = Arrows;
-        newCmd.children[0].value = '';
-        newCmd.children[0].focus();
-
-        document.getElementById("messenger").innerHTML = "";
     }
 }
 
-function computeDisplayMessage() {
+function computeDisplayMessage(rez) {
+    if(rez)
+        return ""+rez;
     return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
 }
 
@@ -190,3 +211,31 @@ function closeNav() {
     document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 }
 
+function makeChildBoxes(data){
+    var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
+        
+    document.getElementById("messenger").innerHTML =  computeDisplayMessage(data);
+
+    removeEvents(document.getElementById("input-line"));
+    document.getElementById("input-line").children[0].disabled = true;
+    document.getElementById("input-line").removeAttribute("id");
+    document.getElementById("user-box").removeAttribute("id");
+
+    document.getElementById("messenger").removeAttribute("id");
+    var cln = itm.cloneNode(true);
+
+    var fchild = cln.children[0];
+    fchild.children[0].setAttribute("id", "user-box");
+    fchild.children[1].setAttribute("id", "input-line");
+    cln.children[1].setAttribute("id", "messenger");
+    document.getElementById("big-box").appendChild(cln);
+    var newCmd = document.getElementById("input-line");
+    newCmd.children[0].disabled = false;
+    // add events
+    newCmd.addEventListener("keypress", keyPressed);
+    newCmd.onkeydown = Arrows;
+    newCmd.children[0].value = '';
+    newCmd.children[0].focus();
+
+    document.getElementById("messenger").innerHTML = "";
+}

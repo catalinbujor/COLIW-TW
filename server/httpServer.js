@@ -27,6 +27,7 @@ passport.use(new FlickrStrategy.Strategy({
 let auth = passport.authenticate('flickr');
 
 http.createServer((request, response) => {
+    let gmail = require('./handlers/gmail.js');
     if (request.url.indexOf("/flickr/callback") === 0) {
         let tokens = {};
         tokens.oauth_verifier = request.url.substring(request.url.indexOf("oauth_verifier") + 15);
@@ -40,6 +41,14 @@ http.createServer((request, response) => {
     }
     else if (request.url.indexOf("/twitter/callback") === 0) {
         twitter.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
+        response.writeHead(302, {
+            'Location': "http://localhost:3000"
+        });
+        response.end();
+    }
+    else if (request.url.indexOf("/gmail/auth") === 0) {
+         let auth_token = request.url.substring(request.url.indexOf("code")+5);
+        gmail.setToken(auth_token);
         response.writeHead(302, {
             'Location': "http://localhost:3000"
         });
