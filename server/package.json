@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/catalinbujor/COLIW-TW-#readme",
   "dependencies": {
+    "cors": "^2.8.4",
     "facebook-node-sdk": "^0.2.0",
     "fb": "^2.0.0",
     "flickrapi": "^0.6.0",
@@ -27,7 +28,8 @@
     "npm": "^5.8.0",
     "oauth-signature": "^1.5.0",
     "prompt": "^1.0.0",
-    "querystring": "^0.2.0"
+    "querystring": "^0.2.0",
+    "tumblr.js": "^1.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.17.3"

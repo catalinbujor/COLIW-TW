@@ -1,6 +1,7 @@
 const http = require("http"),
     flickr = require("./coliw"),
     twitter = require("./handlers/twitter"),
+    tumblr= require("./handlers/tumblr"),
     fs = require("fs");
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -27,6 +28,21 @@ http.createServer((request, response) => {
         });
         response.end();
     }
+    else if (request.url.indexOf("/tumblr/callback") === 0) {
+        tumblr.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
+        response.writeHead(302, {
+            'Location': "http://localhost:3000"
+        });
+        response.end();
+    }
+    else if (request.url.indexOf("/instagram/callback/") === 0) {
+      //  console.log(request.url);
+        response.writeHead(302, {
+            'Location': "http://localhost:3000"
+        });
+        response.end();
+    }
+
     else {
         switch (request.url) {
             case "/auth/flickr":
