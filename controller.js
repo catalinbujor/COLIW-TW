@@ -242,8 +242,23 @@ function keyPressed(e) {
             var url = "http://localhost:8000/tumblr/follow";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
-                document.getElementById("messenger").innerHTML = "Successfully followed!";
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr follow operation was successful!";
+                }
+                else
+                if(data.status == 2)
+                {
+                    msg= "Tumblr operations requires authentication!"
+                }
+                else
+                if(data.status===0){
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+
             };
 
             request.open("POST", url, true);
@@ -258,8 +273,22 @@ function keyPressed(e) {
             var url = "http://localhost:8000/tumblr/unfollow";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
-                document.getElementById("messenger").innerHTML = "Successfully unfollowed!";
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr unfollow operation was successful!";
+                }
+                else
+                if(data.status == 2)
+                {
+                    msg= "Tumblr operations requires authentication!"
+                }
+                else
+                if(data.status===0){
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
             };
             request.open("POST", url, true);
             let data = JSON.stringify({
@@ -278,7 +307,13 @@ function keyPressed(e) {
                 if (data.status === 1) {
                     msg = "Tumblr text  operation was successful!";
                 }
-                else {
+                else
+                    if(data.status == 2)
+                    {
+                        msg= "Tumblr operations requires authentication!"
+                    }
+                else
+                    if(data.status===0){
                     msg = "Oops, an errors has occured! Please retry."
                 }
                 console.log(JSON.stringify(data.errors));
@@ -310,13 +345,33 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+
         else if (inputCmd.indexOf("tumblr delete") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/tumblr/delete";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
-                document.getElementById("messenger").innerHTML = "Successfully unfollowed!";
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr delete operation was successful!";
+                }
+                else
+                if(data.status == 2)
+                {
+                    msg= "Tumblr operations requires authentication!"
+                }
+                else if(data.status==3)
+                {
+                    msg="You must provide the number of the post !"
+                }
+                else
+                if(data.status===0){
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+
             };
             request.open("POST", url, true);
             let data = JSON.stringify({

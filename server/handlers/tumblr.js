@@ -46,6 +46,17 @@ exports.lets_verify = function (verifier) {
 
 
 exports.follow = function (req, res, user) {
+
+    let data ={ status :0};
+    if(global.tumblr.access === undefined)
+    {
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
     let tumblr = require('tumblr.js');
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
@@ -55,12 +66,26 @@ exports.follow = function (req, res, user) {
     });
 
     let urlUser="https://"+user+".tumblr.com";
-    client.followBlog(urlUser,{}, function (err, data) {
-        console.log(err);
+    client.followBlog(urlUser,{}, function (err, r) {
+
+        data.status=1;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
     });
 };
 
 exports.unfollow = function (req, res, user) {
+    let data ={ status :0};
+    if(global.tumblr.access === undefined)
+    {
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
     let tumblr = require('tumblr.js');
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
@@ -71,13 +96,27 @@ exports.unfollow = function (req, res, user) {
 
     let urlUser="https://"+user+".tumblr.com";
     client.unfollowBlog(urlUser,{}, function (err, data) {
-        console.log(err);
+        data.status=1;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
     });
 };
 
 exports.createPostText=function(req,res,titlePost,bodyPost)
 {
+    let data ={status: 0};
     let tumblr = require('tumblr.js');
+
+    if(global.tumblr.access === undefined)
+    {
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
@@ -91,8 +130,7 @@ exports.createPostText=function(req,res,titlePost,bodyPost)
     };
     client.createTextPost(userBlog,atribute,function(err, resas) {
 
-         let data ={status: 1};
-
+        data.status=1;
         data = JSON.stringify(data);
         res.writeHead(200, {"content-type": "application/json"});
         res.end(data);
@@ -117,7 +155,19 @@ exports.createPostPhoto=function(req,res,source)
 
 exports.deletePost=function(req,res,nrofPost)
 {
+    let data ={status: 0};
     let tumblr = require('tumblr.js');
+
+    if(global.tumblr.access === undefined)
+    {
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
+
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
@@ -128,9 +178,21 @@ exports.deletePost=function(req,res,nrofPost)
     let blogName="coliwblog";
     client.blogPosts(blogName, function(err, resp) {
         var nrPost=parseInt(nrofPost);
+        if(resp.posts[nrPost]  ===  undefined )
+        {
+            data.status =3;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return;
+
+        }
         var postId=resp.posts[nrPost].id;
         client.deletePost(blogName,postId,function(err){
-            console.log(err);
+            data.status=1;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
         });
     });
 }
