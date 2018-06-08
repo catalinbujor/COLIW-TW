@@ -1,7 +1,8 @@
 const http = require("http"),
     flickr = require("./coliw"),
     twitter = require("./handlers/twitter"),
-    fs = require("fs");
+    fs = require("fs"),
+    tumblr= require("./handlers/tumblr");
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -32,6 +33,13 @@ http.createServer((request, response) => {
     else if (request.url.indexOf("/gmail/auth") === 0) {
          let auth_token = request.url.substring(request.url.indexOf("code")+5);
         gmail.setToken(auth_token);
+        response.writeHead(302, {
+            'Location': "http://localhost:3000"
+        });
+        response.end();
+    }
+    else if (request.url.indexOf("/tumblr/callback") === 0) {
+        tumblr.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
         response.writeHead(302, {
             'Location': "http://localhost:3000"
         });

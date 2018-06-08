@@ -5,7 +5,7 @@ let http = require("http"),
     instagramHandler = require("./handlers/instagram"),
     slideshareHandler = require("./handlers/slideshare"),
     wordpressHandler = require("./handlers/wordpress");
-
+    tumblrHandler = require("./handlers/tumblr"),
 http.createServer(function (req, res) {
     let data = "";
     req.on("data", (chunk) => {
@@ -97,6 +97,37 @@ http.createServer(function (req, res) {
                 }
                 case "/slideshare": {
                     slideshareHandler(req, res);
+                    break;
+                }
+                case "/tumblr/auth":
+                {
+                    tumblrHandler.auth(req,res);
+                    break;
+                }
+                case "/tumblr/follow":
+                {
+                    tumblrHandler.follow(req,res,obj.numeUser);
+                    break;
+                }
+                case "/tumblr/unfollow":
+                {
+                    tumblrHandler.unfollow(req,res,obj.numeUser);
+                    break;
+                }
+                case "/tumblr/text":
+                {
+                    tumblrHandler.createPostText(req,res,obj.title,obj.body);
+                    break;
+                }
+                case "/tumblr/photo":
+                {
+                    tumblrHandler.createPostPhoto(req,res,obj.photoUrl);
+                    break;
+                }
+
+                case "/tumblr/delete":
+                {
+                    tumblrHandler.deletePost(req,res,obj.nrofPost);
                     break;
                 }
                 default: {

@@ -221,6 +221,118 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
         }
+        else if (inputCmd.indexOf("login tumblr") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/auth";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                if (data.uri) {
+                    window.location.replace(data.uri);
+                }
+            };
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+
+        }
+        else if (inputCmd.indexOf("tumblr follow") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/follow";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                document.getElementById("messenger").innerHTML = "Successfully followed!";
+            };
+
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                numeUser: inputCmd.substring(14)
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("tumblr unfollow") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/unfollow";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                document.getElementById("messenger").innerHTML = "Successfully unfollowed!";
+            };
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                numeUser: inputCmd.substring(16)
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("tumblr text") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/text";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr text  operation was successful!";
+                }
+                else {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+            };
+
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                title: inputCmd.split(" ")[2],
+                body: inputCmd.substring(inputCmd.indexOf(inputCmd.split(" ")[2]) + inputCmd.split(" ")[2].length + 1)
+
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+
+        else if (inputCmd.indexOf("tumblr photo") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/photo";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                document.getElementById("messenger").innerHTML = "Successfully unfollowed!";
+            };
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                photoUrl: inputCmd.substring(13)
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("tumblr delete") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/delete";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                document.getElementById("messenger").innerHTML = "Successfully unfollowed!";
+            };
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                nrofPost: inputCmd.substring(13)
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("login instagram") === 0) {
+    console.log(window.location);
+            window.location.replace("https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback/&response_type=token&scope=likes+comments+public_content");
+
+            //window.location.replace("http://localhost:3000/");
+            //window.location.replace("http://localhost:3000");
+        }
+
     }
 }
 
