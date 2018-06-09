@@ -130,6 +130,11 @@ http.createServer(function (req, res) {
                     tumblrHandler.deletePost(req,res,obj.nrofPost);
                     break;
                 }
+                case "/tumblr/upload":
+                {
+                    tumblrHandler.uploadFile(req,res,obj.path);
+                    break;
+                }
                 default: {
                     res.writeHead(200, {"content-type": "text"});
                     res.write('Invalid path.');

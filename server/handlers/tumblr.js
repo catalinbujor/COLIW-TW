@@ -1,6 +1,7 @@
 const config = require("./config");
 const request = require("request");
 const qs = require("querystring");
+const fs= require("fs");
 global.tumblr = {};
 
 exports.auth = function (req, res) {
@@ -199,5 +200,55 @@ exports.deletePost=function(req,res,nrofPost)
 
 
 
+
+
+exports.uploadFile=function(req,res,path)
+{
+    let data ={status: 0};
+    let tumblr = require('tumblr.js');
+
+    if(global.tumblr.access === undefined)
+    {
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
+    let  client = tumblr.createClient({
+        consumer_key: config.tumblr_api_key,
+        consumer_secret: config.tumblr_api_secret,
+        token: global.tumblr.access.oauth_token,
+        token_secret: global.tumblr.access.oauth_token_secret
+    });
+       let userBlog="coliwblog";
+       fs.readFile(path, (err, result) => {
+          if (err)
+        {
+            console.log("aici#######################3");
+            data.status=4;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return;
+
+        }
+        console.log(result);
+        let atribute = {
+            title: path,
+            body:result
+        };
+        client.createTextPost(userBlog,atribute,function(err, resas) {
+
+            data.status=1;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+        });
+    });
+
+
+}
 
 

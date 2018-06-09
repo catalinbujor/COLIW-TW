@@ -383,6 +383,42 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+
+        else if (inputCmd.indexOf("tumblr upload") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/tumblr/upload";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr delete operation was successful!";
+                }
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
+                }
+                else if(data.status == 4)
+                {
+                    msg="Oops something is wrong with the file !"
+                }
+                else if (data.status == 3) {
+                    msg = "You must provide the number of the post !"
+                }
+                else if (data.status === 0) {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+
+            };
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                path: inputCmd.substring(14)
+
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
         else if (inputCmd.indexOf("login instagram") === 0) {
             console.log(window.location);
             window.location.replace("https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback/&response_type=token&scope=likes+comments+public_content");
