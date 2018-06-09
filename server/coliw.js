@@ -39,6 +39,7 @@ http.createServer(function (req, res) {
         }
         else if (req.method === "POST") {
             let obj = {};
+            data = data || "{}";
             try{
                  obj = JSON.parse(data);
             }
@@ -91,8 +92,18 @@ http.createServer(function (req, res) {
                 case "/gmail/label": {
                     var labelate = gmailHandler.listLabels(gmailHandler.oauth2Client,req,res);
                     labelate.then(function(fulfilled){
-                        //console.log(fulfilled);
                     });
+                    break;
+                }
+                case "/gmail/list": {
+                   gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
+                        console.log(gmailHandler.label_map['COLIW Folder']);
+                        var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,'pisica',[gmailHandler.label_map['COLIW Folder'],gmailHandler.label_map['IMPORTANT']]);
+                        listate.then(function(fulfilled){
+                        })
+                    })
+
+
                     break;
                 }
                 case "/slideshare": {

@@ -221,6 +221,22 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
         }
+
+        else if (inputCmd.indexOf("gmail list") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/gmail/list";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                create_box(data.data);
+            }
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+        }
     }
 }
 
