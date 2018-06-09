@@ -1,2 +1,5 @@
 .idea/
 node_modules/
+server/data/
+package-lock.json
+server/.env
