@@ -55,6 +55,11 @@ function RouterHandleThis(req, res, input, Users) {
         "error": "Invalid parameters",
         "code": 301
     });
+    const invalidPath = JSON.stringify({
+        "status": 0,
+        "error": "Invalid path",
+        "code": 305
+    });
     switch (req.url) {
         case "/users/register":
             if (!Validator(input, req.url)) {
@@ -71,6 +76,8 @@ function RouterHandleThis(req, res, input, Users) {
                 return res.end(invalidParams);
             }
             return UserGetTokens(res, input, Users);
+        default:
+            res.end(invalidPath);
     }
 }
 

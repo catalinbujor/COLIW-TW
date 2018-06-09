@@ -11,17 +11,23 @@ function Arrows(e) {
         document.getElementById("input-line").children[0].value = lastCmd[ind];
         newCmd.children[0].focus();
         ind--;
-        if(ind < 0) {
+        if (ind < 0) {
             ind = lastCmd.length - 1;
         }
     }
 }
+
 function keyPressed(e) {
     if (e.keyCode === 13) { // enter
         var inputCmd = document.getElementById("input-line").children[0].value;
         lastCmd.push(inputCmd);
         ind = lastCmd.length - 1;
-        if (inputCmd === "login flickr") {
+        if (inputCmd.indexOf("login coliw") === 0) {
+            const username = inputCmd.split(" ")[2];
+            const password = inputCmd.split(" ")[3];
+
+        }
+        else if (inputCmd === "login flickr") {
             // LOGIN FLICKR
 
             var request = new XMLHttpRequest();
@@ -29,6 +35,7 @@ function keyPressed(e) {
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
+                console.log(status, data);
             }
 
             request.open("POST", url, true);
@@ -43,8 +50,17 @@ function keyPressed(e) {
             var url = "http://localhost:8000/flickr/upload";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
-                var data = request.responseText; // Returned data, e.g., an HTML document.
-            }
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Photo uploaded successfully!";
+                }
+                else {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data));
+                create_box(msg);
+            };
 
             request.open("POST", url, true);
 
@@ -115,7 +131,7 @@ function keyPressed(e) {
             request.open("POST", url, true);
             var verifier = window.location.href.substring(window.location.href.indexOf("verifier") + 9);
             let data = JSON.stringify({
-                status: inputCmd.substring(14),
+                message: inputCmd.substring(14),
                 verifier: verifier
             });
             request.setRequestHeader("Content-Type", "text/plain");
@@ -247,13 +263,10 @@ function keyPressed(e) {
                 if (data.status === 1) {
                     msg = "Tumblr follow operation was successful!";
                 }
-                else
-                if(data.status == 2)
-                {
-                    msg= "Tumblr operations requires authentication!"
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
                 }
-                else
-                if(data.status===0){
+                else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
                 }
                 console.log(JSON.stringify(data.errors));
@@ -278,13 +291,10 @@ function keyPressed(e) {
                 if (data.status === 1) {
                     msg = "Tumblr unfollow operation was successful!";
                 }
-                else
-                if(data.status == 2)
-                {
-                    msg= "Tumblr operations requires authentication!"
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
                 }
-                else
-                if(data.status===0){
+                else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
                 }
                 console.log(JSON.stringify(data.errors));
@@ -307,13 +317,10 @@ function keyPressed(e) {
                 if (data.status === 1) {
                     msg = "Tumblr text  operation was successful!";
                 }
-                else
-                    if(data.status == 2)
-                    {
-                        msg= "Tumblr operations requires authentication!"
-                    }
-                else
-                    if(data.status===0){
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
+                }
+                else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
                 }
                 console.log(JSON.stringify(data.errors));
@@ -356,17 +363,13 @@ function keyPressed(e) {
                 if (data.status === 1) {
                     msg = "Tumblr delete operation was successful!";
                 }
-                else
-                if(data.status == 2)
-                {
-                    msg= "Tumblr operations requires authentication!"
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
                 }
-                else if(data.status==3)
-                {
-                    msg="You must provide the number of the post !"
+                else if (data.status == 3) {
+                    msg = "You must provide the number of the post !"
                 }
-                else
-                if(data.status===0){
+                else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
                 }
                 console.log(JSON.stringify(data.errors));
@@ -381,7 +384,7 @@ function keyPressed(e) {
             request.send(data);
         }
         else if (inputCmd.indexOf("login instagram") === 0) {
-    console.log(window.location);
+            console.log(window.location);
             window.location.replace("https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback/&response_type=token&scope=likes+comments+public_content");
 
             //window.location.replace("http://localhost:3000/");
@@ -422,8 +425,8 @@ function create_box(msg) {
 
 
 function computeDisplayMessage(rez) {
-    if(rez)
-        return ""+rez;
+    if (rez)
+        return "" + rez;
     return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
 }
 
