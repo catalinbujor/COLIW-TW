@@ -98,7 +98,7 @@ http.createServer(function (req, res) {
                 case "/gmail/list": {
                    gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
                         console.log(gmailHandler.label_map['COLIW Folder']);
-                        var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,'pisica',[gmailHandler.label_map['COLIW Folder'],gmailHandler.label_map['IMPORTANT']]);
+                        var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,'',[],'after:2018/06/07');
                         listate.then(function(fulfilled){
                         })
                     })

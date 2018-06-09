@@ -114,7 +114,7 @@ listLabels : function (auth,req,res)  {
     })
 },
 
-listMessages : function (auth,req,res,keyword,labels){
+listMessages : function (auth,req,res,keyword,labels,date){
     return new Promise(resolve => {
             if(auth.credentials['access_token']==null)
             {
@@ -127,14 +127,31 @@ listMessages : function (auth,req,res,keyword,labels){
                 return ;
             }
             const gmail = google.gmail({version: 'v1', auth});
-            let response = gmail.users.messages.list({
+            let query = "";
+            if(date && keyword)
+                query = keyword + ' and '+date;
+            else query = keyword+date;
+            // if(date)
+            //     keyword+= ' and '+date;
+            gmail.users.messages.list({
                 'userId': 'me',
-                q : keyword,
+                q : query,
                 labelIds : labels
-            }, (err, {data}) => {
-            if (err) return console.log('The API returned an error: ' + err);
+            }, (err, response) => {
+            if (err) {
+                let data2 = JSON.stringify({
+                    "data": 'No messages found! Try another query'
+                });
+                res.writeHead(200, {"content-type": "application/json"});
+                res.end(data2);
+                return console.log('No messages found ');
+            }
+            if(response === undefined)
+            {
+                console.log('No messages found');
+            }
             let mess_list = "";
-            const messages = data.messages;
+            const messages = response.data.messages;
             if (messages.length) {
 
                 messages.forEach((message) => {
