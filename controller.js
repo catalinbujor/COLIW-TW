@@ -22,10 +22,45 @@ function keyPressed(e) {
         var inputCmd = document.getElementById("input-line").children[0].value;
         lastCmd.push(inputCmd);
         ind = lastCmd.length - 1;
-        if (inputCmd.indexOf("login coliw") === 0) {
+        if (inputCmd.indexOf("register coliw") === 0) {
             const username = inputCmd.split(" ")[2];
             const password = inputCmd.split(" ")[3];
 
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/coliw/register";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                create_box(data);
+            };
+            request.open("POST", url);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            let data = JSON.stringify({
+                username,
+                password
+            });
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("login coliw") === 0) {
+            const username = inputCmd.split(" ")[2];
+            const password = inputCmd.split(" ")[3];
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/coliw/login";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                create_box(data);
+            };
+            request.open("POST", url);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            let data = JSON.stringify({
+                username,
+                password
+            });
+            request.send(data);
         }
         else if (inputCmd === "login flickr") {
             // LOGIN FLICKR
@@ -36,7 +71,7 @@ function keyPressed(e) {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 console.log(status, data);
-            }
+            };
 
             request.open("POST", url, true);
 

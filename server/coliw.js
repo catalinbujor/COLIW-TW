@@ -4,8 +4,10 @@ let http = require("http"),
     gmailHandler = require("./handlers/gmail"),
     instagramHandler = require("./handlers/instagram"),
     slideshareHandler = require("./handlers/slideshare"),
-    wordpressHandler = require("./handlers/wordpress");
-    tumblrHandler = require("./handlers/tumblr"),
+    wordpressHandler = require("./handlers/wordpress"),
+    request = require("request"),
+    dbM = require("./handlers/dbModel"),
+    tumblrHandler = require("./handlers/tumblr");
 http.createServer(function (req, res) {
     let data = "";
     req.on("data", (chunk) => {
@@ -39,13 +41,93 @@ http.createServer(function (req, res) {
         }
         else if (req.method === "POST") {
             let obj = {};
-            try{
-                 obj = JSON.parse(data);
+            data = data || "{}";
+            try {
+                obj = JSON.parse(data);
             }
-            catch(e) {
+            catch (e) {
                 console.error(e);
             }
             switch (req.url) {
+                case "/coliw/register": {
+                    const form = {
+                            "username": obj.username,
+                            "passId": obj.password
+                        },
+                        url = "http://localhost:8001/users/register";
+                    return request.post({url: url, json: form}, function (e, r, body) {
+                        if (e || !body || typeof body.status === "undefined") {
+                            res.writeHead(200, {"content-type": "text"});
+                            res.end("An error occured! Please retry!");
+                            return;
+                        }
+
+                        let msg = null;
+                        if (body.status === 1) {
+                            res.writeHead(200, {"content-type": "text"});
+                            res.end("User registered successfully!");
+                            return;
+                        }
+                        switch (body.code) {
+                            case 300:
+                                msg = "Internal error! Please retry later!";
+                                break;
+                            case 301:
+                                msg = "Invalid command! Please retry!";
+                                break;
+                            case 303:
+                                msg = "User is taken! Please try another one!";
+                                break;
+                            default:
+                                msg = "This command is invalid!";
+                                break;
+                        }
+                        res.writeHead(200, {"content-type": "text"});
+                        res.write(msg);
+                        res.end();
+                    });
+                }
+                case "/coliw/login": {
+                    const form = {
+                            "username": obj.username,
+                            "passId": obj.password
+                        },
+                        url = "http://localhost:8001/users/login";
+                    return request.post({url: url, json: form}, function (e, r, body) {
+                        if (e || !body || typeof body.status === "undefined") {
+                            res.writeHead(200, {"content-type": "text"});
+                            res.end("An error occured! Please retry!");
+                            return;
+                        }
+
+                        let msg = null;
+                        if (body.status === 1) {
+                            loadTokens(obj.username);
+                            global.coliw.logged = 1;
+                            global.coliw.username = obj.username;
+                            res.writeHead(200, {"content-type": "text"});
+                            res.end("You have successfully logged in!");
+                            return;
+                        }
+                        switch (body.code) {
+                            case 300:
+                                msg = "Internal error! Please retry later!";
+                                break;
+                            case 301:
+                                msg = "Invalid command! Please retry!";
+                                break;
+                            case 304:
+                                msg = "Invalid credentials!";
+                                break;
+                            default:
+                                msg = "This command is invalid!";
+                                break;
+                        }
+                        res.writeHead(200, {"content-type": "text"});
+                        res.write(msg);
+                        res.end();
+                    });
+                }
                 case "/flickr/auth": {
                     flickrHandler.auth(req, res);
                     break;
@@ -63,7 +145,7 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/twitter/tweet": {
-                    twitterHandler.tweet(req, res, obj.status);
+                    twitterHandler.tweet(req, res, obj.message);
                     break;
                 }
                 case "/twitter/message": {
@@ -89,8 +171,8 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/gmail/label": {
-                    var labelate = gmailHandler.listLabels(gmailHandler.oauth2Client,req,res);
-                    labelate.then(function(fulfilled){
+                    var labelate = gmailHandler.listLabels(gmailHandler.oauth2Client, req, res);
+                    labelate.then(function (fulfilled) {
                         //console.log(fulfilled);
                     });
                     break;
@@ -99,40 +181,33 @@ http.createServer(function (req, res) {
                     slideshareHandler(req, res);
                     break;
                 }
-                case "/tumblr/auth":
-                {
-                    tumblrHandler.auth(req,res);
+                case "/tumblr/auth": {
+                    tumblrHandler.auth(req, res);
                     break;
                 }
-                case "/tumblr/follow":
-                {
-                    tumblrHandler.follow(req,res,obj.numeUser);
+                case "/tumblr/follow": {
+                    tumblrHandler.follow(req, res, obj.numeUser);
                     break;
                 }
-                case "/tumblr/unfollow":
-                {
-                    tumblrHandler.unfollow(req,res,obj.numeUser);
+                case "/tumblr/unfollow": {
+                    tumblrHandler.unfollow(req, res, obj.numeUser);
                     break;
                 }
-                case "/tumblr/text":
-                {
-                    tumblrHandler.createPostText(req,res,obj.title,obj.body);
+                case "/tumblr/text": {
+                    tumblrHandler.createPostText(req, res, obj.title, obj.body);
                     break;
                 }
-                case "/tumblr/photo":
-                {
-                    tumblrHandler.createPostPhoto(req,res,obj.photoUrl);
+                case "/tumblr/photo": {
+                    tumblrHandler.createPostPhoto(req, res, obj.photoUrl);
                     break;
                 }
 
-                case "/tumblr/delete":
-                {
-                    tumblrHandler.deletePost(req,res,obj.nrofPost);
+                case "/tumblr/delete": {
+                    tumblrHandler.deletePost(req, res, obj.nrofPost);
                     break;
                 }
-                case "/tumblr/upload":
-                {
-                    tumblrHandler.uploadFile(req,res,obj.path);
+                case "/tumblr/upload": {
+                    tumblrHandler.uploadFile(req, res, obj.path);
                     break;
                 }
                 default: {
@@ -149,3 +224,18 @@ http.createServer(function (req, res) {
         }
     });
 }).listen(8000);
+
+function loadTokens(username) {
+    let url = "http://localhost:8001/users/get_tokens";
+    let json = {
+        username
+    };
+    request.post({url: url, json}, function (e, r, body) {
+        if (e || !body || typeof body.status === "undefined") {
+            return;
+        }
+        Object.keys(body.tokens).forEach((token) => {
+            global[token].access = body.tokens[token];
+        });
+    });
+}

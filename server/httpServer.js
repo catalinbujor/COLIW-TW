@@ -2,13 +2,17 @@ const http = require("http"),
     flickr = require("./coliw"),
     twitter = require("./handlers/twitter"),
     fs = require("fs"),
-    tumblr= require("./handlers/tumblr");
+    tumblr = require("./handlers/tumblr");
 
 const hostname = "127.0.0.1";
 const port = 3000;
 const htmlContent = fs.readFileSync("../index.html", {encoding: "utf8"});
 const cssContent = fs.readFileSync("../css/topbar.css", {encoding: "utf8"});
 const jsContent = fs.readFileSync("../controller.js", {encoding: "utf8"});
+
+global.coliw = {
+    logged: 0
+};
 
 http.createServer((request, response) => {
     let gmail = require('./handlers/gmail.js');
@@ -31,7 +35,7 @@ http.createServer((request, response) => {
         response.end();
     }
     else if (request.url.indexOf("/gmail/auth") === 0) {
-         let auth_token = request.url.substring(request.url.indexOf("code")+5);
+        let auth_token = request.url.substring(request.url.indexOf("code") + 5);
         gmail.setToken(auth_token);
         response.writeHead(302, {
             'Location': "http://localhost:3000"

@@ -136,6 +136,16 @@ exports.lets_verify = function (verifier) {
         let qs = require("querystring");
         let perm_data = qs.parse(body);
         global.twitter.access = perm_data || {};
-        console.log(perm_data);
+        url = "http://localhost:8001/users/add_token";
+        if (global.coliw.logged === 1) {
+            let json = {
+                "username": global.coliw.username,
+                "token": "twitter",
+                "value": perm_data
+            };
+            request.post({url: url, json}, () => {
+            });
+            console.log(perm_data);
+        }
     });
 };
