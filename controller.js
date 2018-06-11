@@ -233,9 +233,20 @@ function keyPressed(e) {
             }
 
             request.open("POST", url, true);
+            let words = inputCmd.split(' ');
+            let keyword_='';
+            let key_f = words.indexOf('-tag:');
+            if(key_f>0){
+                keyword_ = words[key_f+1];
+            }
+            let data2 = JSON.stringify({
+                keyword:'pisica',
+                date : 'after:2018/06/07',
+                labels:['UNREAD']
+            });
 
             request.setRequestHeader("Content-Type", "text/plain");
-            request.send();
+            request.send(data2);
         }
     }
 }

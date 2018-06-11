@@ -96,9 +96,18 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/gmail/list": {
-                   gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
-                        console.log(gmailHandler.label_map['COLIW Folder']);
-                        var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,'',[],'after:2018/06/07');
+                    console.log("Keyword "+obj.keyword);
+                    if(obj.keyword == undefined)
+                        obj.keyword = null;
+                    console.log("Data "+obj.date);
+                    if(obj.date == undefined)
+                    {
+                        obj.date = null;
+                    }
+                    if(obj.labels == undefined)
+                        obj.labels=null;
+                    gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
+                    var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,obj.labels,obj.date);//'pisica',[],'after:2018/06/07');
                         listate.then(function(fulfilled){
                         })
                     })
