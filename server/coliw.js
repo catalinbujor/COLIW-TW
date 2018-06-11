@@ -106,8 +106,16 @@ http.createServer(function (req, res) {
                     }
                     if(obj.labels == undefined)
                         obj.labels=null;
+                    console.log("Labels "+obj.labels);
+                    let hashed_labels = [];
+                    if(obj.labels.length > 0)
+                    {
+                        for(var i=0;i<obj.labels.length;i++)
+                            hashed_labels.push(gmailHandler.label_map[obj.labels[i]]);
+                    }
+                    console.log('Hashed '+hashed_labels);
                     gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
-                    var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,obj.labels,obj.date);//'pisica',[],'after:2018/06/07');
+                    var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
                         listate.then(function(fulfilled){
                         })
                     })

@@ -239,10 +239,30 @@ function keyPressed(e) {
             if(key_f>0){
                 keyword_ = words[key_f+1];
             }
+
+            let date_ = '';
+            let date_f = Math.max(words.indexOf('-before:'),words.indexOf('-after:'));
+
+            if(date_f > 0){
+                date_ = words[date_f].substr(1)+words[date_f+1];
+            }
+            let labels_ = '';
+            labels_ = [];
+
+            let lab_f = words.indexOf('-labels:');
+
+            if(lab_f>0)
+            {
+                for(var i=lab_f+1;i<words.length;i++)
+                    if(words[i]!=null)
+                    labels_.push(words[i]);
+            }
+
+
             let data2 = JSON.stringify({
-                keyword:'pisica',
-                date : 'after:2018/06/07',
-                labels:['UNREAD']
+                keyword:keyword_,
+                date : date_,//'after:2018/06/07',
+                labels:labels_
             });
 
             request.setRequestHeader("Content-Type", "text/plain");
