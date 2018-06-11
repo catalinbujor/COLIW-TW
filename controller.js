@@ -258,7 +258,6 @@ function keyPressed(e) {
                     labels_.push(words[i]);
             }
 
-
             let data2 = JSON.stringify({
                 keyword:keyword_,
                 date : date_,//'after:2018/06/07',

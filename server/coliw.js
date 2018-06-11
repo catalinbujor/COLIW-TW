@@ -96,30 +96,32 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/gmail/list": {
-                    console.log("Keyword "+obj.keyword);
+                    //console.log("Keyword "+obj.keyword);
                     if(obj.keyword == undefined)
                         obj.keyword = null;
-                    console.log("Data "+obj.date);
+                    //console.log("Data "+obj.date);
                     if(obj.date == undefined)
                     {
                         obj.date = null;
                     }
                     if(obj.labels == undefined)
                         obj.labels=null;
-                    console.log("Labels "+obj.labels);
-                    let hashed_labels = [];
-                    if(obj.labels.length > 0)
-                    {
-                        for(var i=0;i<obj.labels.length;i++)
-                            hashed_labels.push(gmailHandler.label_map[obj.labels[i]]);
-                    }
-                    console.log('Hashed '+hashed_labels);
+                    //console.log("Labels "+obj.labels);
                     gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
-                    var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
+                        let hashed_labels =[];
+                        if(obj.labels.length > 0)
+                        {
+                            for(var i=0;i<obj.labels.length;i++)
+                                hashed_labels.push(gmailHandler.label_map[obj.labels[i]]);
+                        }
+                        else hashed_labels = obj.labels;
+                      //  console.log('Hashed '+hashed_labels);
+                         var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
                         listate.then(function(fulfilled){
+                           // var mesaj = gmailHandler.getMessage(gmailHandler.)
+
                         })
                     })
-
 
                     break;
                 }

@@ -37,8 +37,6 @@ module.exports = {
 
     label_map : map,
 
-
-
   oauth2Client : oauth2Client,
   url : url,
   setToken : async function(code)
@@ -71,7 +69,7 @@ listLabels : function (auth,req,res)  {
     return new Promise(resolve => {
         if(auth.credentials['access_token']==null)
         {
-            console.log("In listLabels  "+JSON.stringify(auth));
+            //console.log("In listLabels  "+JSON.stringify(auth));
             let data2 = JSON.stringify({
                 "data": 'Logheaza-te cu contul de google pentru a continua'
             });
@@ -151,13 +149,15 @@ listMessages : function (auth,req,res,keyword,labels,date){
                 console.log('No messages found');
             }
             let mess_list = "";
+
             const messages = response.data.messages;
+
             if (messages.length) {
 
                 messages.forEach((message) => {
-                    console.log(`- - ${message.id}`);
+                    //console.log(`- - ${message.id}`);
                     mess_list += ` ${message.id} \n\r`;
-                    messages_list.push(message.id);
+                    //messages_list.push(message.id);
                 });
             } else {
                 mess_list = 'No labels found.';
@@ -168,68 +168,25 @@ listMessages : function (auth,req,res,keyword,labels,date){
             });
             res.writeHead(200, {"content-type": "application/json"});
             res.end(data2);
-            console.log('Aici in gmail.js la res.end la messages list');
+            resolve(mess_list);
+            //console.log('Aici in gmail.js la res.end la messages list');
         })
             })
     },
 
-    getMessage : function (auth,req,res,labels)  {
+    getMessage : function (auth,idMessage)  {
         return new Promise(resolve => {
             const gmail = google.gmail({version: 'v1', auth});
             gmail.users.messages.get({
                 userId: 'me',
+                id : idMessage
             }, (err, {data}) => {
                 if (err) return console.log('The API returned an error: ' + err);
-                let mess_list = "";
-                const messages = data.messages;
-                if (messages.length) {
-
-                    messages.forEach((message) => {
-                        console.log(`- - ${message.id}`);
-                        mess_list += ` ${message.id} \n\r`;
-                        messages_list.push(message.id);
-                    });
-                } else {
-                    mess_list='No labels found.';
-                    console.log('No labels found.');
-                }
-                let data2 = JSON.stringify({
-                    "data": mess_list
-                });
-                res.writeHead(200, {"content-type": "application/json"});
-                res.end(data2);
-                console.log('Aici in gmail.js la res.end la messages list');
-                resolve(mess_list);
-
+                resolve(data);
             });
         })
     },
-listLabelss : function (oauth){
-    return new Promise(resolve => {
-        if(oauth.credentials['access_token']==null)
-        {
-            resolve();
-            return ;
-        }
-        const gmail = google.gmail({version: 'v1', oauth});
-        gmail.users.labels.list({
-            userId: 'me',
-        }, (err, {data}) => {
-            if (err) return console.log('The API returned an error: ' + err);
-            const labels = data.labels;
-            if (labels.length) {
-                labels.forEach((label) => {
-                    map[label.name]=label.id;
-                });
-                resolve();
-            } else {
-                console.log('No labels found.');
-                resolve();
-            }
 
-        });
-    });
-},
 
 
 auth : function (req, res) {
@@ -240,7 +197,7 @@ auth : function (req, res) {
         });
         res.writeHead(200, {"content-type": "application/json"});
         res.end(data);
-        console.log('Aici in gmail.js');
+        //console.log('Aici in gmail.js');
 }
 
 }
