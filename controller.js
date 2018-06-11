@@ -1,3 +1,13 @@
+//var request = new XMLHttpRequest();
+var url = "http://localhost:3000/coliw/checkUser";
+var request = new XMLHttpRequest();
+request.open('GET', url, false);  // `false` makes the request synchronous
+request.send(null);
+
+if (request.status === 200) {
+    document.getElementById("user-box").children[0].innerHTML = request.responseText;
+}
+
 var cmd = document.getElementById("input-line");
 document.getElementById("input-line").children[0].focus();
 
@@ -27,7 +37,7 @@ function keyPressed(e) {
             const password = inputCmd.split(" ")[3];
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/coliw/register";
+            var url = "http://localhost:3000/coliw/register";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -47,10 +57,13 @@ function keyPressed(e) {
             const password = inputCmd.split(" ")[3];
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/coliw/login";
+            var url = "http://localhost:3000/coliw/login";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
+                if (data === "You have successfully logged in!") {
+                    return create_box(data, username);
+                }
                 create_box(data);
             };
             request.open("POST", url);
@@ -66,7 +79,7 @@ function keyPressed(e) {
             // LOGIN FLICKR
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/flickr/auth";
+            var url = "http://localhost:3000/flickr/auth";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -82,7 +95,7 @@ function keyPressed(e) {
             // UPLOAD FLICKR
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/flickr/upload";
+            var url = "http://localhost:3000/flickr/upload";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -91,7 +104,7 @@ function keyPressed(e) {
                     msg = "Photo uploaded successfully!";
                 }
                 else {
-                    msg = "Oops, an errors has occured! Please retry."
+                    msg = data.error;
                 }
                 console.log(JSON.stringify(data));
                 create_box(msg);
@@ -109,7 +122,7 @@ function keyPressed(e) {
             // tag opt FLICKR
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/flickr/tag";
+            var url = "http://localhost:3000/flickr/tag";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -124,7 +137,7 @@ function keyPressed(e) {
             // LOGIN twitter
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/twitter/auth";
+            var url = "http://localhost:3000/twitter/auth";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -141,7 +154,7 @@ function keyPressed(e) {
         else if (inputCmd.indexOf("twitter tweet") === 0) {
             // twitter tweet
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/twitter/tweet";
+            var url = "http://localhost:3000/twitter/tweet";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -176,7 +189,7 @@ function keyPressed(e) {
             // twitter tweet
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/twitter/message";
+            var url = "http://localhost:3000/twitter/message";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -208,7 +221,7 @@ function keyPressed(e) {
         else if (inputCmd.indexOf("twitter get") === 0) {
             var request = new XMLHttpRequest();
             // twitter get
-            var url = "http://localhost:8000/twitter/get";
+            var url = "http://localhost:3000/twitter/get";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -240,7 +253,7 @@ function keyPressed(e) {
             // LOGIN gmail
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/gmail/auth";
+            var url = "http://localhost:3000/gmail/auth";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -259,7 +272,7 @@ function keyPressed(e) {
 
         else if (inputCmd.indexOf("gmail label") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/gmail/label";
+            var url = "http://localhost:3000/gmail/label";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -274,7 +287,7 @@ function keyPressed(e) {
         }
         else if (inputCmd.indexOf("login tumblr") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/auth";
+            var url = "http://localhost:3000/tumblr/auth";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -290,7 +303,7 @@ function keyPressed(e) {
         }
         else if (inputCmd.indexOf("tumblr follow") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/follow";
+            var url = "http://localhost:3000/tumblr/follow";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -318,7 +331,7 @@ function keyPressed(e) {
         }
         else if (inputCmd.indexOf("tumblr unfollow") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/unfollow";
+            var url = "http://localhost:3000/tumblr/unfollow";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -344,7 +357,7 @@ function keyPressed(e) {
         }
         else if (inputCmd.indexOf("tumblr text") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/text";
+            var url = "http://localhost:3000/tumblr/text";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -374,7 +387,7 @@ function keyPressed(e) {
 
         else if (inputCmd.indexOf("tumblr photo") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/photo";
+            var url = "http://localhost:3000/tumblr/photo";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
@@ -390,7 +403,7 @@ function keyPressed(e) {
 
         else if (inputCmd.indexOf("tumblr delete") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/delete";
+            var url = "http://localhost:3000/tumblr/delete";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -421,7 +434,7 @@ function keyPressed(e) {
 
         else if (inputCmd.indexOf("tumblr upload") === 0) {
             var request = new XMLHttpRequest();
-            var url = "http://localhost:8000/tumblr/upload";
+            var url = "http://localhost:3000/tumblr/upload";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -466,7 +479,7 @@ function keyPressed(e) {
 }
 
 
-function create_box(msg) {
+function create_box(msg, username) {
     var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
     document.getElementById("messenger").innerHTML = msg;
 
@@ -492,6 +505,9 @@ function create_box(msg) {
     newCmd.children[0].focus();
 
     document.getElementById("messenger").innerHTML = "";
+    if (username) {
+        document.getElementById("user-box").children[0].innerHTML = "@" + username;
+    }
 }
 
 

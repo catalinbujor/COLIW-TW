@@ -116,10 +116,11 @@ exports.unfollow = function (req, res, user) {
 
 exports.createPostText=function(req,res,titlePost,bodyPost)
 {
+    let tumblrInfo = req.session.get("tumblr") || {};
     let data ={status: 0};
     let tumblr = require('tumblr.js');
 
-    if(global.tumblr.access === undefined)
+    if(tumblrInfo === undefined)
     {
         data.status=2;
         data = JSON.stringify(data);
@@ -131,8 +132,8 @@ exports.createPostText=function(req,res,titlePost,bodyPost)
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
     let userBlog="coliwblog";
     let atribute = {

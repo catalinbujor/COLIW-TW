@@ -31,12 +31,13 @@ exports.auth = function (req, res) {
 };
 
 exports.tweet = function (req, res, status) {
+    let twitterInfo = req.session.get("twitter") || {};
     let oauth =
             {
                 consumer_key: config.twitter_api_key,
                 consumer_secret: config.twitter_api_secret,
-                token: global.twitter.access.oauth_token,
-                token_secret: global.twitter.access.oauth_token_secret
+                token: twitterInfo.oauth_token,
+                token_secret: twitterInfo.oauth_token_secret
             },
         url = "https://api.twitter.com/1.1/statuses/update.json";
 
@@ -62,12 +63,14 @@ exports.tweet = function (req, res, status) {
 };
 
 exports.message = function (req, res, user, text) {
+    let twitterInfo = req.session.get("twitter") || {};
+
     let oauth =
             {
                 consumer_key: config.twitter_api_key,
                 consumer_secret: config.twitter_api_secret,
-                token: global.twitter.access.oauth_token,
-                token_secret: global.twitter.access.oauth_token_secret
+                token: twitterInfo.oauth_token,
+                token_secret: twitterInfo.oauth_token_secret
             },
         url = "https://api.twitter.com/1.1/direct_messages/new.json";
 
