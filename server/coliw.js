@@ -142,11 +142,13 @@ http.createServer(function (req, res) {
                     break;
                 }
 
+
                 case "/insta/tag":
                 {
-                    instagramHandler.getTag(req,res);
+                    instagramHandler.getTag(req,res,obj.tagName);
                     break;
                 }
+
 
 
                 default: {

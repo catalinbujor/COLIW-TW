@@ -437,7 +437,6 @@ function keyPressed(e) {
             window.location.replace(url);
         }
         else if (inputCmd.indexOf("insta me") === 0) {
-
             var request = new XMLHttpRequest();
             var url = "http://localhost:8000/insta/get";
             request.onload = function () {
@@ -454,36 +453,44 @@ function keyPressed(e) {
                 }
                 else
                     create_box(data.data);
+
+
             }
-        else
-            if (inputCmd.indexOf("insta findTag") === 0) {
-
-                var request = new XMLHttpRequest();
-                var url = "http://localhost:8000/insta/tag";
-                request.onload = function () {
-                    var data = request.responseText; // Returned data, e.g., an HTML document.
-                    data = JSON.parse(data);
-
-                    if (data.status == 3) {
-                        msg = "Instagram operations requires authentication!"
-                        create_box(msg);
-                    }
-                    else if (data.status == 2) {
-                        msg = "Oops, an errors has occured! Please retry!"
-                        create_box(msg);
-                    }
-                    else
-                        create_box(data.data);
-
-                };
-
-
-                request.open("POST", url, true);
-                request.setRequestHeader("Content-Type", "text/plain");
-                request.send("");
-            }
-
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
         }
+         else if (inputCmd.indexOf("insta find") === 0) {
+
+         var request = new XMLHttpRequest();
+         var url = "http://localhost:8000/insta/tag";
+         request.onload = function () {
+             var data = request.responseText; // Returned data, e.g., an HTML document.
+             data = JSON.parse(data);
+
+             if (data.status == 3) {
+                 msg = "Instagram operations requires authentication!"
+                 create_box(msg);
+             }
+             else if (data.status == 2) {
+                 msg = "Oops, an errors has occured! Please retry!"
+                 create_box(msg);
+             }
+             else {
+                 console.log(data.data);
+                 create_box(data.data);
+             }
+
+         };
+         request.open("POST", url, true);
+         let data = JSON.stringify({
+             tagName: inputCmd.substring(11)
+         });
+         request.setRequestHeader("Content-Type", "text/plain");
+         request.send(data);
+     }
+     }
+
     }
 
 
