@@ -16,8 +16,6 @@ exports.auth = function (req, res) {
         let req_data = qs.parse(body);
         let uri = "https://www.tumblr.com/oauth/authorize"
             + "?" + qs.stringify({oauth_token: req_data.oauth_token});
-        console.log(req_data);
-        console.log(uri);
         global.tumblr = req_data || {};
         let data = JSON.stringify({
             "uri": uri
@@ -41,7 +39,7 @@ exports.lets_verify = function (verifier) {
         let qs = require("querystring");
         let perm_data = qs.parse(body);
         global.tumblr.access = perm_data || {};
-        console.log(perm_data);
+        //console.log(perm_data);
     });
 };
 
@@ -139,20 +137,55 @@ exports.createPostText=function(req,res,titlePost,bodyPost)
 }
 
 
-exports.createPostPhoto=function(req,res,source)
-{
+exports.createPostPhoto=function(req,res,source) {
+
+    if(global.tumblr.access === undefined)
+    {
+        var data ={status :0};
+        data.status=2;
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return;
+
+    }
+
+
     let tumblr = require('tumblr.js');
-    let  client = tumblr.createClient({
+    let client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
         token: global.tumblr.access.oauth_token,
         token_secret: global.tumblr.access.oauth_token_secret
     });
-    let userBlog="coliwblog";
+    let userBlog = "coliwblog";
+    let params={
+        source:source,
+        caption:'test'
+
+    }
     client.createPhotoPost(userBlog,params,function(err, data) {
-        console.log(err);
+        if(err != null)
+        {
+            var data ={status :0};
+            data.status=3;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return;
+        }
+        else {
+            var data ={status :0};
+            data.status = 1;
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+
+        }
     });
 }
+
+
 
 exports.deletePost=function(req,res,nrofPost)
 {
