@@ -410,9 +410,8 @@ function keyPressed(e) {
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
                 }
-                else if(data.status == 4)
-                {
-                    msg="Oops something is wrong with the file !"
+                else if (data.status == 4) {
+                    msg = "Oops something is wrong with the file !"
                 }
                 else if (data.status == 3) {
                     msg = "You must provide the number of the post !"
@@ -433,74 +432,118 @@ function keyPressed(e) {
             request.send(data);
         }
         else if (inputCmd.indexOf("login instagram") === 0) {
-            console.log(window.location);
-            window.location.replace("https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback/&response_type=token&scope=likes+comments+public_content");
 
-            //window.location.replace("http://localhost:3000/");
-            //window.location.replace("http://localhost:3000");
+            var url = 'https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback&response_type=code';
+            window.location.replace(url);
         }
+        else if (inputCmd.indexOf("insta me") === 0) {
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:8000/insta/get";
+            request.onload = function () {
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+
+                if (data.status == 3) {
+                    msg = "Instagram operations requires authentication!"
+                    create_box(msg);
+                }
+                else if (data.status == 2) {
+                    msg = "Oops, an errors has occured! Please retry!"
+                    create_box(msg);
+                }
+                else
+                    create_box(data.data);
+            }
+        else
+            if (inputCmd.indexOf("insta findTag") === 0) {
+
+                var request = new XMLHttpRequest();
+                var url = "http://localhost:8000/insta/tag";
+                request.onload = function () {
+                    var data = request.responseText; // Returned data, e.g., an HTML document.
+                    data = JSON.parse(data);
+
+                    if (data.status == 3) {
+                        msg = "Instagram operations requires authentication!"
+                        create_box(msg);
+                    }
+                    else if (data.status == 2) {
+                        msg = "Oops, an errors has occured! Please retry!"
+                        create_box(msg);
+                    }
+                    else
+                        create_box(data.data);
+
+                };
+
+
+                request.open("POST", url, true);
+                request.setRequestHeader("Content-Type", "text/plain");
+                request.send("");
+            }
+
+        }
+    }
+
+
+    function create_box(msg) {
+        var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
+        document.getElementById("messenger").innerHTML = msg;
+
+        removeEvents(document.getElementById("input-line"));
+        document.getElementById("input-line").children[0].disabled = true;
+        document.getElementById("input-line").removeAttribute("id");
+        document.getElementById("user-box").removeAttribute("id");
+
+        document.getElementById("messenger").removeAttribute("id");
+        var cln = itm.cloneNode(true);
+
+        var fchild = cln.children[0];
+        fchild.children[0].setAttribute("id", "user-box");
+        fchild.children[1].setAttribute("id", "input-line");
+        cln.children[1].setAttribute("id", "messenger");
+        document.getElementById("big-box").appendChild(cln);
+        var newCmd = document.getElementById("input-line");
+        newCmd.children[0].disabled = false;
+        // add events
+        newCmd.addEventListener("keypress", keyPressed);
+        newCmd.onkeydown = Arrows;
+        newCmd.children[0].value = '';
+        newCmd.children[0].focus();
+
+        document.getElementById("messenger").innerHTML = "";
+    }
+
+
+    function computeDisplayMessage(rez) {
+        if (rez)
+            return "" + rez;
+        return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
+    }
+
+    function removeEvents(element) {
+        var clone = element.cloneNode();
+        while (element.firstChild) {
+            clone.appendChild(element.lastChild);
+        }
+        element.parentNode.replaceChild(clone, element);
+    }
+
+    var bgculori = ['#B388FF', '#283593', '#8C9EFF', '#009688', '#00ACC1', '#CDDC39', '#FFE082', '#795548', '#BDBDBD', '#E64A19', '#EA80FC', '#F48FB1',
+        '#607D8B', '#EFEBE9', '#84FFFF', '#311B92'];
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "13em";
+        document.getElementById("main").style.marginLeft = "11em";
+        document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
 
     }
-}
 
-
-function create_box(msg) {
-    var itm = document.getElementById("big-box").children[document.getElementById("big-box").children.length - 1];
-    document.getElementById("messenger").innerHTML = msg;
-
-    removeEvents(document.getElementById("input-line"));
-    document.getElementById("input-line").children[0].disabled = true;
-    document.getElementById("input-line").removeAttribute("id");
-    document.getElementById("user-box").removeAttribute("id");
-
-    document.getElementById("messenger").removeAttribute("id");
-    var cln = itm.cloneNode(true);
-
-    var fchild = cln.children[0];
-    fchild.children[0].setAttribute("id", "user-box");
-    fchild.children[1].setAttribute("id", "input-line");
-    cln.children[1].setAttribute("id", "messenger");
-    document.getElementById("big-box").appendChild(cln);
-    var newCmd = document.getElementById("input-line");
-    newCmd.children[0].disabled = false;
-    // add events
-    newCmd.addEventListener("keypress", keyPressed);
-    newCmd.onkeydown = Arrows;
-    newCmd.children[0].value = '';
-    newCmd.children[0].focus();
-
-    document.getElementById("messenger").innerHTML = "";
-}
-
-
-function computeDisplayMessage(rez) {
-    if (rez)
-        return "" + rez;
-    return "Command " + "'" + document.getElementById("input-line").children[0].value + "'" + " executed successfully!";
-}
-
-function removeEvents(element) {
-    var clone = element.cloneNode();
-    while (element.firstChild) {
-        clone.appendChild(element.lastChild);
+    /* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+        document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
     }
-    element.parentNode.replaceChild(clone, element);
-}
-
-var bgculori = ['#B388FF', '#283593', '#8C9EFF', '#009688', '#00ACC1', '#CDDC39', '#FFE082', '#795548', '#BDBDBD', '#E64A19', '#EA80FC', '#F48FB1',
-    '#607D8B', '#EFEBE9', '#84FFFF', '#311B92'];
-
-function openNav() {
-    document.getElementById("mySidenav").style.width = "13em";
-    document.getElementById("main").style.marginLeft = "11em";
-    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
-
-}
-
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-    document.body.style.backgroundColor = bgculori[Math.floor((Math.random() * bgculori.length))];
-}
 

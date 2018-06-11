@@ -135,6 +135,20 @@ http.createServer(function (req, res) {
                     tumblrHandler.uploadFile(req,res,obj.path);
                     break;
                 }
+
+                case "/insta/get":
+                {
+                    instagramHandler.getUserInformation(req,res);
+                    break;
+                }
+
+                case "/insta/tag":
+                {
+                    instagramHandler.getTag(req,res);
+                    break;
+                }
+
+
                 default: {
                     res.writeHead(200, {"content-type": "text"});
                     res.write('Invalid path.');

@@ -46,6 +46,7 @@ exports.getUserInformation = function getUser(req, res) {
                 let value = `${data.data[property]}`;
                 let propertyName=`${property}`;
 
+                console.log(propertyName);
 
                 if (propertyName != 'counts' && propertyName != 'is_business' && propertyName != 'id') {
                     atribute += propertyName.toUpperCase()+ ":  " + value;
@@ -70,46 +71,12 @@ exports.getUserInformation = function getUser(req, res) {
 
 
             let infoDetails = JSON.stringify({"data": atribute});
+
             res.writeHead(200, {"content-type": "application/json"});
             res.end(infoDetails);
-    })};
+    })}
 
 
-exports.getTag= function (req,res,tagName) {
-
-    if(global.instagram.acces === undefined) // check for auth status
-    {
-        let data={status:3};
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
-        return;
-    }
-    var url="https://api.instagram.com/v1/tags/search?q="+tagName +"&access_token="+global.instagram.acces;
-    request.get(url ,function (error, response, body) {
-        if(error !== null)
-        {
-            let data={status:2};
-            data = JSON.stringify(data);
-            res.writeHead(200, {"content-type": "application/json"});
-            res.end(data);
-            return;
-        }
-        let data=JSON.parse(response.body);
-        let result="";
-        for(var i=0; i<10; i++)
-        {
-           result+=data.data[i].name + '  found in  ' + data.data[i].media_count  + ' posts ';
-           result+='\n\n';
-        }
-       let results = JSON.stringify({"data":result});
-       res.writeHead(200, {"content-type": "application/json"});
-       res.end(results);
-
-
-    })
-
-};
 
 
 
