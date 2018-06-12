@@ -76,6 +76,11 @@ function UserError(user,res) {
 }
 
 exports.follow = function (req, res, user) {
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
+
     let data ={ status :0};
     if(LoginError(res,req))
    {
@@ -112,6 +117,10 @@ exports.follow = function (req, res, user) {
 
 exports.unfollow = function (req, res, user) {
     let data ={ status :0};
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     if(LoginError(res,req))
     {
         return;
@@ -150,20 +159,15 @@ exports.unfollow = function (req, res, user) {
 
 exports.createPostText = function (req, res, titlePost, bodyPost) {
     let data = {status: 0};
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     let tumblr = require('tumblr.js');
 
     if(LoginError(res,req))
     {
         return;
-    }
-
-    if (global.tumblr.access === undefined) {
-        data.status = 2;
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
-        return;
-
     }
     let client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
@@ -194,6 +198,10 @@ exports.createPostText = function (req, res, titlePost, bodyPost) {
 
 
 exports.createPostPhoto=function(req,res,source) {
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     if(LoginError(res,req))
     {
         return;
@@ -235,7 +243,10 @@ exports.createPostPhoto=function(req,res,source) {
 
 
 exports.deletePost=function(req,res,nrofPost)
-{
+{   let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     let data ={status: 0};
     let tumblr = require('tumblr.js');
 
@@ -279,7 +290,10 @@ exports.deletePost=function(req,res,nrofPost)
 
 exports.uploadFile=function(req,res,path)
 {
-
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     let tumblr = require('tumblr.js');
 
     if(LoginError(res,req))
