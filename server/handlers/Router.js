@@ -34,7 +34,8 @@ module.exports = function (request, response, data) {
                     "token": "flickr",
                     "value": global.flickr.opts
                 };
-                requestLib.post({url: url, json}, () => {});
+                requestLib.post({url: url, json}, () => {
+                });
             }, 1500);
 
         }
@@ -65,7 +66,16 @@ module.exports = function (request, response, data) {
         });
         response.end();
     }
-    else if(request.url === "/") {
+
+    else if (request.url.indexOf("/instagram/callback") === 0) {
+        // console.log(request.url.substring(request.url.indexOf("code") + 5));
+        instagramHandler.lets_verify(request.url.substring(request.url.indexOf("code") + 5));
+        response.writeHead(302, {
+            'Location': "http://localhost:3000"
+        });
+        response.end();
+    }
+    else if (request.url === "/") {
         htmlHandler(request, response);
     }
     else if (request.url === "/css/topbar.css") {
@@ -140,6 +150,14 @@ module.exports = function (request, response, data) {
                 }
                 case "/instagram/auth": {
                     instagramHandler.auth(request, response);
+                    break;
+                }
+                case "/insta/get": {
+                    instagramHandler.getUserInformation(request, response);
+                    break;
+                }
+                case "/insta/tag": {
+                    instagramHandler.getTag(request, response, obj.tagName);
                     break;
                 }
                 case "/wordpress": {
