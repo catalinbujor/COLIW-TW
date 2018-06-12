@@ -4,6 +4,17 @@ const qs = require("querystring");
 const fs= require("fs");
 global.tumblr = {};
 
+function LoginError(res, req) {
+    let tumblrInfo = req.session.get("tumblr");
+    if (global.tumblr.access === undefined && tumblrInfo === undefined) {
+        let data = {status: 2};
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return true;
+    }
+    return false;
+}
 exports.auth = function (req, res) {
     let oauth = {
             callback: "http://localhost:3000/tumblr/callback" ,
@@ -39,7 +50,6 @@ exports.lets_verify = function (verifier) {
         let qs = require("querystring");
         let perm_data = qs.parse(body);
         global.tumblr.access = perm_data || {};
-        console.log(perm_data);
         let url = "http://localhost:8001/users/add_token";
         if (global.coliw.logged === 1) {
             let json = {
@@ -48,23 +58,32 @@ exports.lets_verify = function (verifier) {
                 "value": perm_data
             };
             request.post({url: url, json}, () => {});
-            console.log(perm_data);
         }
     });
 };
 
-
-exports.follow = function (req, res, user) {
-
-    let data ={ status :0};
-    if(global.tumblr.access === undefined)
+function UserError(user,res) {
+    if(user.length == 0)
     {
-        data.status=2;
+        let data={status:4};
         data = JSON.stringify(data);
         res.writeHead(200, {"content-type": "application/json"});
         res.end(data);
-        return;
+        return true ;
+    }
 
+    return false;
+}
+
+exports.follow = function (req, res, user) {
+    let data ={ status :0};
+    if(LoginError(res,req))
+   {
+        return;
+    }
+    if(UserError(user,res))
+    {
+        return;
     }
     let tumblr = require('tumblr.js');
     let  client = tumblr.createClient({
@@ -73,9 +92,16 @@ exports.follow = function (req, res, user) {
         token: global.tumblr.access.oauth_token,
         token_secret: global.tumblr.access.oauth_token_secret
     });
-
     let urlUser="https://"+user+".tumblr.com";
     client.followBlog(urlUser,{}, function (err, r) {
+        if(err !== null)
+        {
+            let data = {status: 0};
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return ;
+        }
 
         data.status=1;
         data = JSON.stringify(data);
@@ -86,15 +112,15 @@ exports.follow = function (req, res, user) {
 
 exports.unfollow = function (req, res, user) {
     let data ={ status :0};
-    if(global.tumblr.access === undefined)
+    if(LoginError(res,req))
     {
-        data.status=2;
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
         return;
-
     }
+    if(UserError(user,res))
+    {
+        return;
+    }
+
     let tumblr = require('tumblr.js');
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
@@ -105,6 +131,14 @@ exports.unfollow = function (req, res, user) {
 
     let urlUser="https://"+user+".tumblr.com";
     client.unfollowBlog(urlUser,{}, function (err, data) {
+        if(err !== null)
+        {
+            let data = {status: 0};
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return ;
+        }
         data.status=1;
         data = JSON.stringify(data);
         res.writeHead(200, {"content-type": "application/json"});
@@ -112,35 +146,46 @@ exports.unfollow = function (req, res, user) {
     });
 };
 
-exports.createPostText=function(req,res,titlePost,bodyPost)
-{
-    let tumblrInfo = req.session.get("tumblr") || {};
-    let data ={status: 0};
+
+
+exports.createPostText = function (req, res, titlePost, bodyPost) {
+    let data = {status: 0};
     let tumblr = require('tumblr.js');
 
-    if(tumblrInfo === undefined)
+    if(LoginError(res,req))
     {
-        data.status=2;
+        return;
+    }
+
+    if (global.tumblr.access === undefined) {
+        data.status = 2;
         data = JSON.stringify(data);
         res.writeHead(200, {"content-type": "application/json"});
         res.end(data);
         return;
 
     }
-    let  client = tumblr.createClient({
+    let client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: tumblrInfo.oauth_token,
-        token_secret: tumblrInfo.oauth_token_secret
+        token: global.tumblr.access.oauth_token,
+        token_secret: global.tumblr.access.oauth_token_secret
     });
-    let userBlog="coliwblog";
+    let userBlog = "coliwblog";
     let atribute = {
         title: titlePost,
         body: bodyPost
     };
-    client.createTextPost(userBlog,atribute,function(err, resas) {
-
-        data.status=1;
+    client.createTextPost(userBlog, atribute, function (err, resas) {
+        if(err !== null)
+        {
+            let data = {status: 0};
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return ;
+        }
+        data.status = 1;
         data = JSON.stringify(data);
         res.writeHead(200, {"content-type": "application/json"});
         res.end(data);
@@ -149,18 +194,10 @@ exports.createPostText=function(req,res,titlePost,bodyPost)
 
 
 exports.createPostPhoto=function(req,res,source) {
-
-    if(global.tumblr.access === undefined)
+    if(LoginError(res,req))
     {
-        var data ={status :0};
-        data.status=2;
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
         return;
-
     }
-
 
     let tumblr = require('tumblr.js');
     let client = tumblr.createClient({
@@ -197,20 +234,14 @@ exports.createPostPhoto=function(req,res,source) {
 }
 
 
-
 exports.deletePost=function(req,res,nrofPost)
 {
     let data ={status: 0};
     let tumblr = require('tumblr.js');
 
-    if(global.tumblr.access === undefined)
+    if(LoginError(res,req))
     {
-        data.status=2;
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
         return;
-
     }
 
     let  client = tumblr.createClient({
@@ -248,17 +279,12 @@ exports.deletePost=function(req,res,nrofPost)
 
 exports.uploadFile=function(req,res,path)
 {
-    let data ={status: 0};
+
     let tumblr = require('tumblr.js');
 
-    if(global.tumblr.access === undefined)
+    if(LoginError(res,req))
     {
-        data.status=2;
-        data = JSON.stringify(data);
-        res.writeHead(200, {"content-type": "application/json"});
-        res.end(data);
         return;
-
     }
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
@@ -268,23 +294,30 @@ exports.uploadFile=function(req,res,path)
     });
        let userBlog="coliwblog";
        fs.readFile(path, (err, result) => {
-          if (err)
-        {
-            console.log("aici#######################3");
-            data.status=4;
-            data = JSON.stringify(data);
-            res.writeHead(200, {"content-type": "application/json"});
-            res.end(data);
-            return;
-
-        }
-        console.log(result);
+           if(err != null)
+           {
+               var data ={status :0};
+               data.status=3;
+               data = JSON.stringify(data);
+               res.writeHead(200, {"content-type": "application/json"});
+               res.end(data);
+               return;
+           }
         let atribute = {
             title: path,
             body:result
         };
-        client.createTextPost(userBlog,atribute,function(err, resas) {
-
+        client.createTextPost(userBlog,atribute,function(err, resp) {
+            if(err != null)
+            {
+                var data ={status :0};
+                data.status=3;
+                data = JSON.stringify(data);
+                res.writeHead(200, {"content-type": "application/json"});
+                res.end(data);
+                return;
+            }
+            var data ={status: 0};
             data.status=1;
             data = JSON.stringify(data);
             res.writeHead(200, {"content-type": "application/json"});

@@ -314,8 +314,11 @@ function keyPressed(e) {
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
                 }
+                else if (data.status == 4) {
+                    msg = "You must provide the user !"
+                }
                 else if (data.status === 0) {
-                    msg = "Oops, an errors has occured! Please retry."
+                    msg = "Oops, an errors has occured! (Maybe the user)."
                 }
                 console.log(JSON.stringify(data.errors));
                 create_box(msg);
@@ -341,6 +344,9 @@ function keyPressed(e) {
                 }
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
+                }
+                else if (data.status == 4) {
+                    msg = "You must provide the user !"
                 }
                 else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
@@ -398,7 +404,7 @@ function keyPressed(e) {
                     msg = "Tumblr operations requires authentication!"
                 }
                 else if (data.status == 3) {
-                    msg = "Foto problem!"
+                    msg = "Check the photo !"
                 }
                 else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
@@ -458,12 +464,12 @@ function keyPressed(e) {
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
                 }
-                else if(data.status == 4)
+                else if(data.status == 3)
                 {
                     msg="Oops something is wrong with the file !"
                 }
-                else if (data.status == 3) {
-                    msg = "You must provide the number of the post !"
+                else if (data.status == 4) {
+                    msg = "Oops, an errors has occured! Please retry.!"
                 }
                 else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
