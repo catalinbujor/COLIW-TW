@@ -15,13 +15,24 @@ exports.lets_verify = function (verifier) {
 
         var acces_token = (JSON).parse(body);
         global.instagram.acces = acces_token.access_token;
-
+        let url = "http://localhost:8001/users/add_token";
+        if (global.coliw.logged === 1) {
+            let json = {
+                "username": global.coliw.username,
+                "token": "instagram",
+                "value": acces_token.access_token
+            };
+            request.post({url: url, json}, () => {});
+        }
     })
 };
 
 exports.getUserInformation = function getUser(req, res) {
-
-    if(global.instagram.acces === undefined) // check for auth status
+    let instaInfo = req.session.get("instagram");
+    if (!instaInfo) {
+        instaInfo = global.instagram.acces;
+    }
+    if(instaInfo === undefined) // check for auth status
     {
         let data={status:3};
         data = JSON.stringify(data);
@@ -29,7 +40,7 @@ exports.getUserInformation = function getUser(req, res) {
         res.end(data);
         return;
     }
-    var url = "https://api.instagram.com/v1/users/self/?access_token=" + global.instagram.acces;
+    var url = "https://api.instagram.com/v1/users/self/?access_token=" + instaInfo;
     request.get(url, function (error, response) {
 
             if(error !== null)
@@ -76,8 +87,11 @@ exports.getUserInformation = function getUser(req, res) {
 
 
 exports.getTag= function (req,res,tagName) {
-
-    if(global.instagram.acces === undefined) // check for auth status
+    let instaInfo = req.session.get("instagram");
+    if (!instaInfo) {
+        instaInfo = global.instagram.acces;
+    }
+    if(instaInfo === undefined) // check for auth status
     {
         let data={status:3};
         data = JSON.stringify(data);
@@ -85,7 +99,7 @@ exports.getTag= function (req,res,tagName) {
         res.end(data);
         return;
     }
-    var url="https://api.instagram.com/v1/tags/search?q="+tagName +"&access_token="+global.instagram.acces;
+    var url="https://api.instagram.com/v1/tags/search?q="+tagName +"&access_token="+instaInfo;
     request.get(url ,function (error, response, body) {
         if(error !== null)
         {

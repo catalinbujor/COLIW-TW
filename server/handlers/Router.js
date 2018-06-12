@@ -32,7 +32,7 @@ module.exports = function (request, response, data) {
                 let json = {
                     "username": global.coliw.username,
                     "token": "flickr",
-                    "value": global.flickr.opts
+                    "value": global.flickr
                 };
                 requestLib.post({url: url, json}, () => {
                 });
