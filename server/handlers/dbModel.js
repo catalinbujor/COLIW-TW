@@ -76,6 +76,11 @@ function RouterHandleThis(req, res, input, Users) {
                 return res.end(invalidParams);
             }
             return UserGetTokens(res, input, Users);
+        case "/users/login":
+            if (!Validator(input, req.url)) {
+                return res.end(invalidParams);
+            }
+            return LoginUser(res, input, Users);
         default:
             res.end(invalidPath);
     }
@@ -199,6 +204,32 @@ function UserGetTokens(res, input, Users) {
         const success = JSON.stringify({
             "status": 1,
             "tokens": docs.tokens
+        });
+        res.end(success);
+    });
+}
+
+function LoginUser(res, input, Users) {
+    const query = {"username": input.username};
+    Users.findOne(query, (err, docs) => {
+        if (err) {
+            const dbError = JSON.stringify({
+                "status": 0,
+                "error": err,
+                "code": 300
+            });
+            return res.end(dbError);
+        }
+        if (!docs || docs.passId !== input.passId) {
+            const uError = JSON.stringify({
+                "status": 0,
+                "error": "User not found!",
+                "code": 304
+            });
+            return res.end(uError);
+        }
+        const success = JSON.stringify({
+            "status": 1
         });
         res.end(success);
     });

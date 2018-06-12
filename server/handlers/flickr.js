@@ -9,7 +9,9 @@ const Flickr = require("flickrapi"),
         permissions: "write"
     };
 
-global.flickr = {};
+global.flickr = {
+    opts: {}
+};
 
 exports.auth = function (req, res) {
     let resp = {
@@ -26,26 +28,49 @@ exports.auth = function (req, res) {
     res.end(data);
 };
 
-exports.upload = function (req, res, path) {
+exports.upload = function (req, res, path, tags) {
     let uploadOptions = {
         photos: [{
-            title: "testare",
-            tags: [
-                "testare"
-            ],
+            title: "test",
+            tags: ["aaa"],
             photo: path
         }]
     };
-        Flickr.upload(uploadOptions, global.flickr.opts, (err, res) => {
-            console.log(err, res);
-        });
-
-    let resp = {
-        "flickr": 1
-    };
-    let data = JSON.stringify(resp);
     res.writeHead(200, {"content-type": "application/json"});
-    res.end(data);
+    if (!fs.existsSync(path)) {
+        let resp = {
+            "status": 0,
+            "error": "Invalid path!"
+        };
+        let data = JSON.stringify(resp);
+        return res.end(data);
+    }
+    let flickrOpts = req.session.get("flickr");
+    try {
+        Flickr.upload(uploadOptions, flickrOpts, (err, result) => {
+            if (err) {
+                let resp = {
+                    "status": 0,
+                    "error": "Oops, something went wrong! Please retry or login again with the required permissions!"
+                };
+                let data = JSON.stringify(resp);
+                return res.end(data);
+            }
+            let resp = {
+                "status": 1
+            };
+            let data = JSON.stringify(resp);
+            res.end(data);
+        });
+    }catch(e){
+        let resp = {
+            "status": 0,
+            "error": "Oops, something went wrong! Please retry or login again with the required permissions!"
+        };
+        let data = JSON.stringify(resp);
+        return res.end(data);
+    }
+
 };
 
 exports.tag = function (req, res) {
