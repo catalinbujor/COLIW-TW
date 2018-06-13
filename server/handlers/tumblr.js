@@ -348,6 +348,11 @@ exports.update=function(req,res)
     if (!instaInfo) {
         instaInfo = global.instagram.acces;
     }
+
+    let tumblrInfo = req.session.get("tumblr");
+    if (!tumblrInfo) {
+        tumblrInfo = global.tumblr.access;
+    }
     if(typeof  instaInfo === undefined)
     {
         let data = {status: 2};
