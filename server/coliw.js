@@ -84,9 +84,9 @@ http.createServer(function (req, res) {
                     break;
                 }
                 case "/gmail/auth": {
-                    console.log("In coliw.js auth");
+                    //console.log("In coliw.js auth");
                     gmailHandler.auth(req, res);
-                    console.log("Dupa coliw auth");
+                    //console.log("Dupa coliw auth");
                     break;
                 }
                 case "/gmail/label": {
@@ -106,8 +106,13 @@ http.createServer(function (req, res) {
                     }
                     if(obj.labels == undefined)
                         obj.labels=null;
+
+                    var parsate = gmailHandler.parseAllMessages(res,res,obj);
+                    parsate.then(function(){
+                        console.log("gata");
+                    });
                     //console.log("Labels "+obj.labels);
-                    gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
+                   /* gmailHandler.listLabels(gmailHandler.oauth2Client,null,null).then(function(){
                         let hashed_labels =[];
                         if(obj.labels.length > 0)
                         {
@@ -118,11 +123,20 @@ http.createServer(function (req, res) {
                       //  console.log('Hashed '+hashed_labels);
                          var listate = gmailHandler.listMessages(gmailHandler.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
                         listate.then(function(fulfilled){
-                           // var mesaj = gmailHandler.getMessage(gmailHandler.)
-
+                            if(fulfilled) {
+                               //console.log("Fulfilled "+fulfilled[0]);
+                                //var mesaj = gmailHandler.getMessage(gmailHandler.oauth2Client, fulfilled[0]);
+                                /!*mesaj.then(function (mesajRez) {
+                                    //console.log(JSON.stringify(mesajRez));
+                                    let compresat = gmailHandler.parseMessage(mesajRez);
+                                    compresat.then(function(msgcompresat){
+                                        console.log(JSON.stringify(msgcompresat));
+                                    })
+                                });*!/
+                            }
                         })
-                    })
-
+                    });
+*/
                     break;
                 }
                 case "/slideshare": {

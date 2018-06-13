@@ -30,8 +30,7 @@ const oauth2Client = new google.auth.OAuth2(
     scope: scopes
   });
 
-
-
+let fs = require('fs');
 
 module.exports = {
 
@@ -41,21 +40,22 @@ module.exports = {
   url : url,
   setToken : async function(code)
   {
+
   console.log("Token code !!! "+code);
   
-  const {tokens} = await oauth2Client.getToken(code);
+  //const {tokens} = await oauth2Client.getToken(code);
 
-  console.log('BINEEEEEEEEE');
-  oauth2Client.setCredentials(tokens);
-   // oauth2Client.getToken(code, (err, token) => {
-  //   if (err) return callback(err);
-  //   oauth2Client.setCredentials(token);s
-  //   // Store the token to disk for later program executions
-  //   fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-  //     if (err) return console.error(err);
-  //     console.log('Token stored to', TOKEN_PATH);
-  //   });
-  // });
+  //console.log('BINEEEEEEEEE');
+  //oauth2Client.setCredentials(tokens);
+   oauth2Client.getToken(code, (err, token) => {
+    if (err) return console.log('Eroare token google');
+    oauth2Client.setCredentials(token);
+    // Store the token to disk for later program executions
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+      if (err) return console.error(err);
+      console.log('Token stored to', TOKEN_PATH);
+    });
+  });
 
   },
   
@@ -113,6 +113,7 @@ listLabels : function (auth,req,res)  {
 },
 
 listMessages : function (auth,req,res,keyword,labels,date){
+    messages_list=[];
     return new Promise(resolve => {
             if(auth.credentials['access_token']==null)
             {
@@ -121,7 +122,7 @@ listMessages : function (auth,req,res,keyword,labels,date){
                 });
                 res.writeHead(200, {"content-type": "application/json"});
                 res.end(data2);
-                resolve();
+                resolve("OK");
                 return ;
             }
             const gmail = google.gmail({version: 'v1', auth});
@@ -157,7 +158,7 @@ listMessages : function (auth,req,res,keyword,labels,date){
                 messages.forEach((message) => {
                     //console.log(`- - ${message.id}`);
                     mess_list += ` ${message.id} \n\r`;
-                    //messages_list.push(message.id);
+                    messages_list.push(message.id);
                 });
             } else {
                 mess_list = 'No labels found.';
@@ -168,7 +169,7 @@ listMessages : function (auth,req,res,keyword,labels,date){
             });
             res.writeHead(200, {"content-type": "application/json"});
             res.end(data2);
-            resolve(mess_list);
+            resolve(messages_list);
             //console.log('Aici in gmail.js la res.end la messages list');
         })
             })
@@ -187,7 +188,106 @@ listMessages : function (auth,req,res,keyword,labels,date){
         })
     },
 
+    parseMessage : function(fullMessage_){
+        return new Promise(resolve => {
+            //console.log("FULL "+JSON.stringify(fullMessage_));
+            let atob = require('atob');
 
+         let compressed_message = {
+                        'snippet':fullMessage_.snippet,
+                        'base':atob(fullMessage_.payload.body.data),
+                        'deliveredTo':fullMessage_.payload['headers'][20].value,
+                        'subject':fullMessage_.payload['headers'][19].value,
+                        'data':fullMessage_.payload['headers'][17].value,
+                        'from':fullMessage_.payload['headers'][16].value
+                    };
+         resolve(compressed_message);
+        });
+    },
+
+    readFromFile : function(filename){
+    return new Promise(resolve => {
+        fs.readFile(filename, 'utf8', function (err, data) {
+            if (err) {
+                return console.log(err);
+            }
+            resolve(data);
+        });
+    });
+    },
+
+    parseAllMessages: function(req,res,obj){
+        return new Promise(resolve => {
+            let html_resultat='';
+
+            module.exports.readFromFile('.//..//css//htmlmockup').then(function(htmlmock){
+                html_resultat = htmlmock;
+                module.exports.listLabels(module.exports.oauth2Client,null,null).then(function(){
+                    let hashed_labels =[];
+                    if(obj.labels.length > 0)
+                    {
+                        for(var i=0;i<obj.labels.length;i++)
+                            hashed_labels.push(exports.label_map[obj.labels[i]]);
+                    }
+                    else hashed_labels = obj.labels;
+                    //  console.log('Hashed '+hashed_labels);
+
+                    var listate = module.exports.listMessages(module.exports.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
+                    listate.then(function(messages){
+                        if(messages) {
+                            //console.log("messages "+messages);
+
+                            for(var i=0;i<messages.length;i++)
+                            {
+                                //console.log('ID '+messages[i]);
+                                var mesaj = module.exports.getMessage(module.exports.oauth2Client,messages[i]);
+                                mesaj.then(function (mesajRez) {
+                                    //console.log(JSON.stringify(mesajRez));
+                                    let compresat = module.exports.parseMessage(mesajRez);
+                                    compresat.then(function(msgcompresat){
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<h2 id = "inner"> Subject:<b>'+msgcompresat.subject+'</b></h2>';
+                                    html_resultat+='</div>\n';
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<p id = "inner"> Data:<i>'+msgcompresat.data+'</i></p>';
+                                    html_resultat+='</div>\n';
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<p id = "inner"> From :<i>'+msgcompresat.from+'</i></p>';
+                                    html_resultat+='</div>\n';
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<p id = "inner"> Delivered to :<i>'+msgcompresat.deliveredTo+'</i></p>';
+                                    html_resultat+='</div>\n';
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<p id = "actualmessage">'+msgcompresat.base+'</p>';
+                                    html_resultat+='</div>\n';
+
+                                    html_resultat+='<div>\n';
+                                    html_resultat+='<p id = "actualmessage">'+'---------------------'+'</p>';
+                                    html_resultat+='</div>\n';
+                                    })
+
+
+                                });
+
+                            }
+
+
+
+                        }
+                    })
+                });
+
+            });
+        });
+
+
+
+    },
 
 auth : function (req, res) {
     let oauth = oauth2Client
