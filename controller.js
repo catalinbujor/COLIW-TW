@@ -314,7 +314,6 @@ function keyPressed(e) {
             request.send();
 
         }
-        //TESTING
         else if (inputCmd.indexOf("get insta pp | update tumblr") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/update";
@@ -323,13 +322,10 @@ function keyPressed(e) {
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 data = JSON.parse(data);
                 if (data.status === 1) {
-                    msg = "Ma operation was successful!";
+                    msg = "Operation was successful!";
                 }
                 else if (data.status == 2) {
                     msg = "Operation requires authentification on instagram and tumblr!"
-                }
-                else if (data.status == 4) {
-                    msg = "You must provide the user !"
                 }
                 else if (data.status === 0) {
                     msg = "Oops, an errors has occured! (Maybe the user)."
@@ -342,7 +338,6 @@ function keyPressed(e) {
             request.send();
 
         }
-        //END TESTING
         else if (inputCmd.indexOf("tumblr follow") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/follow";
