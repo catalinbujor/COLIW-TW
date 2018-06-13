@@ -94,8 +94,8 @@ exports.follow = function (req, res, user) {
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
     let urlUser="https://"+user+".tumblr.com";
     client.followBlog(urlUser,{}, function (err, r) {
@@ -134,8 +134,8 @@ exports.unfollow = function (req, res, user) {
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
 
     let urlUser="https://"+user+".tumblr.com";
@@ -169,11 +169,11 @@ exports.createPostText = function (req, res, titlePost, bodyPost) {
     {
         return;
     }
-    let client = tumblr.createClient({
+    let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
     let userBlog = "coliwblog";
     let atribute = {
@@ -208,11 +208,11 @@ exports.createPostPhoto=function(req,res,source) {
     }
 
     let tumblr = require('tumblr.js');
-    let client = tumblr.createClient({
+    let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
     let userBlog = "coliwblog";
     let params={
@@ -258,8 +258,8 @@ exports.deletePost=function(req,res,nrofPost)
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
 
     let blogName="coliwblog";
@@ -303,8 +303,8 @@ exports.uploadFile=function(req,res,path)
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
-        token: global.tumblr.access.oauth_token,
-        token_secret: global.tumblr.access.oauth_token_secret
+        token: tumblrInfo.oauth_token,
+        token_secret: tumblrInfo.oauth_token_secret
     });
        let userBlog="coliwblog";
        fs.readFile(path, (err, result) => {
