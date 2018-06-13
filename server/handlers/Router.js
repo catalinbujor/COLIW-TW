@@ -51,7 +51,7 @@ module.exports = function (request, response, data) {
         });
         response.end();
     }
-    else if (request.url.indexOf("/gmail/auth") === 0) {
+    else if (request.url.indexOf("/gmail/callback") === 0) {
         let auth_token = request.url.substring(request.url.indexOf("code") + 5);
         gmailHandler.setToken(auth_token);
         response.writeHead(302, {
@@ -176,15 +176,33 @@ module.exports = function (request, response, data) {
                     break;
                 }
                 case "/gmail/auth": {
-                    console.log("In coliw.js auth");
                     gmailHandler.auth(request, response);
-                    console.log("Dupa coliw auth");
                     break;
                 }
                 case "/gmail/label": {
+                    console.log('Aici');
                     var labelate = gmailHandler.listLabels(gmailHandler.oauth2Client, request, response);
                     labelate.then(function (fulfilled) {
                         //console.log(fulfilled);
+                    });
+                    break;
+                }
+                case "/gmail/list": {
+                    console.log("aici");
+                    console.log("Keyword "+obj.keyword);
+                    if(obj.keyword == undefined)
+                        obj.keyword = null;
+                    console.log("Data "+obj.date);
+                    if(obj.date == undefined)
+                    {
+                        obj.date = null;
+                    }
+                    if(obj.labels == undefined)
+                        obj.labels=null;
+
+                    var parsate = gmailHandler.parseAllMessages(request,response,obj);
+                    parsate.then(function(rezultat){
+                        console.log("gata");
                     });
                     break;
                 }

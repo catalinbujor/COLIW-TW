@@ -284,6 +284,7 @@ function keyPressed(e) {
         }
 
         else if (inputCmd.indexOf("gmail label") === 0) {
+            console.log('sal');
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/gmail/label";
             request.onload = function () {
@@ -298,6 +299,53 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
         }
+        else if (inputCmd.indexOf("gmail list") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/gmail/list";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                create_box(data.data);
+            }
+
+            request.open("POST", url, true);
+            let words = inputCmd.split(' ');
+            let keyword_='';
+            let key_f = words.indexOf('-tag:');
+            if(key_f>0){
+                keyword_ = words[key_f+1];
+            }
+
+            let date_ = '';
+            let date_f = Math.max(words.indexOf('-before:'),words.indexOf('-after:'));
+
+            if(date_f > 0){
+                date_ = words[date_f].substr(1)+words[date_f+1];
+            }
+            let labels_;
+            labels_ = [];
+
+            let lab_f = words.indexOf('-labels:');
+
+            if(lab_f>0)
+            {
+                for(var i=lab_f+1;i<words.length;i++)
+                    if(words[i]!=null)
+                        labels_.push(words[i]);
+            }
+
+            let data2 = JSON.stringify({
+                keyword:keyword_,
+                date : date_,//'after:2018/06/07',
+                labels:labels_
+            });
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data2);
+        }
+
+
         else if (inputCmd.indexOf("login tumblr") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/auth";
@@ -609,7 +657,6 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
-
 }
 }
 
@@ -644,7 +691,6 @@ function create_box(msg, username) {
         document.getElementById("user-box").children[0].innerHTML = "@" + username;
     }
 }
-
 
 function computeDisplayMessage(rez) {
     if (rez)
