@@ -141,6 +141,11 @@ module.exports = function (request, response, data) {
                     tumblr.update(request, response);
                     break;
                 }
+                case "/tumblr/updateInfo": {
+                    tumblr.postInstaInformation(request, response);
+                    break;
+                }
+
                 //Testing
                 case "/twitter/tweet": {
                     twitter.tweet(request, response, obj.message);

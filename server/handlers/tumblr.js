@@ -2,8 +2,6 @@ const config = require("./config");
 const request = require("request");
 const qs = require("querystring");
 const fs= require("fs");
-const instagramHandler = require("./instagram");
-
 global.tumblr = {};
 
 function LoginError(res, req) {
@@ -37,7 +35,6 @@ exports.auth = function (req, res) {
         res.end(data);
     });
 };
-
 exports.lets_verify = function (verifier) {
     let oauth = {
             consumer_key: config.tumblr_api_key,
@@ -76,13 +73,11 @@ function UserError(user,res) {
 
     return false;
 }
-
 exports.follow = function (req, res, user) {
     let tumblrInfo = req.session.get("tumblr");
     if (!tumblrInfo) {
-        tumblrInfo = global.tumblr.acces;
+        tumblrInfo = global.tumblr.access;
     }
-
     let data ={ status :0};
     if(LoginError(res,req))
    {
@@ -116,7 +111,6 @@ exports.follow = function (req, res, user) {
         res.end(data);
     });
 };
-
 exports.unfollow = function (req, res, user) {
     let data ={ status :0};
     let tumblrInfo = req.session.get("tumblr");
@@ -159,6 +153,18 @@ exports.unfollow = function (req, res, user) {
 
 
 
+function TextError(titlePost,bodyPost,res) {
+    if(titlePost.length == 0 && bodyPost.length == 0)
+    {
+        let data={status:4};
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return true ;
+    }
+
+    return false;
+}
 exports.createPostText = function (req, res, titlePost, bodyPost) {
     let data = {status: 0};
     let tumblrInfo = req.session.get("tumblr");
@@ -171,6 +177,7 @@ exports.createPostText = function (req, res, titlePost, bodyPost) {
     {
         return;
     }
+
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
@@ -182,7 +189,7 @@ exports.createPostText = function (req, res, titlePost, bodyPost) {
         title: titlePost,
         body: bodyPost
     };
-    client.createTextPost(userBlog, atribute, function (err, resas) {
+    client.createTextPost(userBlog, atribute, function (err) {
         if(err !== null)
         {
             let data = {status: 0};
@@ -197,8 +204,6 @@ exports.createPostText = function (req, res, titlePost, bodyPost) {
         res.end(data);
     });
 }
-
-
 exports.createPostPhoto=function(req,res,source) {
     let tumblrInfo = req.session.get("tumblr");
     if (!tumblrInfo) {
@@ -244,48 +249,43 @@ exports.createPostPhoto=function(req,res,source) {
 }
 
 
-exports.deletePost=function(req,res,nrofPost)
-{   let tumblrInfo = req.session.get("tumblr");
+exports.deletePost = function (req, res, nrofPost) {
+    let data = {status: 0};
+    let tumblrInfo = req.session.get("tumblr");
     if (!tumblrInfo) {
         tumblrInfo = global.tumblr.access;
     }
-    let data ={status: 0};
-    let tumblr = require('tumblr.js');
-
     if(LoginError(res,req))
     {
         return;
     }
-
+    let tumblr = require('tumblr.js');
     let  client = tumblr.createClient({
         consumer_key: config.tumblr_api_key,
         consumer_secret: config.tumblr_api_secret,
         token: tumblrInfo.oauth_token,
         token_secret: tumblrInfo.oauth_token_secret
     });
-
-    let blogName="coliwblog";
-    client.blogPosts(blogName, function(err, resp) {
-        var nrPost=parseInt(nrofPost);
-        if(resp.posts[nrPost]  ===  undefined )
-        {
-            data.status =3;
+    let blogName = "coliwblog";
+    client.blogPosts(blogName, function (err, resp) {
+        var nrPost = parseInt(nrofPost);
+        if (resp.posts[nrPost] === undefined) {
+            data.status = 3;
             data = JSON.stringify(data);
             res.writeHead(200, {"content-type": "application/json"});
             res.end(data);
             return;
 
         }
-        var postId=resp.posts[nrPost].id;
-        client.deletePost(blogName,postId,function(err){
-            data.status=1;
+        var postId = resp.posts[nrPost].id;
+        client.deletePost(blogName, postId, function (err) {
+            data.status = 1;
             data = JSON.stringify(data);
             res.writeHead(200, {"content-type": "application/json"});
             res.end(data);
         });
     });
 }
-
 
 
 exports.uploadFile=function(req,res,path)
@@ -369,6 +369,53 @@ exports.update=function(req,res)
         let source=data.data.profile_picture;
         exports.createPostPhoto(req,res,source);
     })
+
+}
+
+
+exports.postInstaInformation=function (req,res) {
+
+
+    let instaInfo = req.session.get("instagram");
+    if (!instaInfo) {
+        instaInfo = global.instagram.acces;
+    }
+    if (LoginError(res, req)) {
+        return;
+    }
+    var url = "https://api.instagram.com/v1/users/self/?access_token=" + instaInfo;
+    request.get(url, function (error, response) {
+        if (error !== null) {
+            let data = {status: 2};
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return;
+        }
+        let data = JSON.parse(response.body);
+
+    let html=
+        "<html>" +
+        "<head>" +
+        "<title></title>"+
+        "</head>"+
+        "<body>"+
+        "<h1>"+ data.data.full_name.toUpperCase()+"</h1>"+
+        "<h2>"+"Username :    "+data.data.username+"</h2>"+
+        "<img src="+data.data.profile_picture +  ">"+
+        "<p><i>" + "BIO:         "+ data.data.bio +"</i></p>"+
+        "<p><i>" + "WEBSITE:     "+ data.data.website +"</i></p>"+
+        "<p><b>" + "POSTS:       "+ data.data.counts.media +"</b></p>"+
+        "<p><b>" + "FOLLOWS:     "+ data.data.counts.follows +"</b></p>"+
+        "<p><b>" + "FOLLOWED_BY: "+ data.data.counts.followed_by +"</b></p>"+
+        "</body>"+
+        "</html>";
+
+
+    exports.createPostText(req,res,"Instagram informations",html);
+
+    })
+
 
 }
 

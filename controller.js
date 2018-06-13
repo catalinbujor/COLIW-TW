@@ -33,18 +33,18 @@ function keyPressed(e) {
         var inputCmd = document.getElementById("input-line").children[0].value;
         lastCmd.push(inputCmd);
         ind = lastCmd.length - 1;
-
         if(inputCmd.indexOf("save theme") === 0)
         {
             saved=true;
-            create_box("Tema s-a salvat");
+            create_box("Theme saved!");
         }
         else
         if(inputCmd.indexOf("change theme") === 0)
         {
             saved=false;
-            create_box("Poti alege o tema acum");
+            create_box("You can change your theme now!");
         }
+        else
         if (inputCmd.indexOf("register coliw") === 0) {
             const username = inputCmd.split(" ")[2];
             const password = inputCmd.split(" ")[3];
@@ -338,6 +338,31 @@ function keyPressed(e) {
             request.send();
 
         }
+
+        else if (inputCmd.indexOf("get insta info | update tumblr") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/tumblr/updateInfo";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                if (data.status === 1) {
+                    msg = "Operation was successful!";
+                }
+                else if (data.status == 2) {
+                    msg = "Operation requires authentification on instagram and tumblr!"
+                }
+                else if (data.status === 0) {
+                    msg = "Oops, an errors has occured! (Maybe the user)."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+            };
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
+
+        }
         else if (inputCmd.indexOf("tumblr follow") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/follow";
@@ -410,6 +435,10 @@ function keyPressed(e) {
                 }
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
+                }
+
+                else if (data.status == 4) {
+                    msg = "You must provide the text!"
                 }
                 else if (data.status === 0) {
                     msg = "Oops, an errors has occured! Please retry."
@@ -580,6 +609,7 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+
 }
 }
 
@@ -630,9 +660,7 @@ function removeEvents(element) {
     element.parentNode.replaceChild(clone, element);
 }
 
-var bgculori = ['#B388FF', '#283593', '#8C9EFF', '#009688', '#00ACC1', '#CDDC39', '#FFE082', '#795548', '#BDBDBD', '#E64A19', '#EA80FC', '#F48FB1',
-    '#607D8B', '#EFEBE9', '#84FFFF', '#311B92'];
-
+var bgculori = ['#B388FF','#283593', '#8C9EFF', '#009688', '#00ACC1', '#CDDC39', '#FFE082', '#795548', '#BDBDBD', '#E64A19', '#EA80FC', '#F48FB1', '#607D8B', '#311B92'];
 function openNav() {
     document.getElementById("mySidenav").style.width = "13em";
     document.getElementById("main").style.marginLeft = "11em";
@@ -642,7 +670,6 @@ function openNav() {
 
 }
 
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0, and the background color of body to white */
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("main").style.marginLeft = "0";
