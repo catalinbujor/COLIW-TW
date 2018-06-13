@@ -153,8 +153,10 @@ module.exports = {
                     let data2 = JSON.stringify({
                         "data": 'No messages found! Try another query'
                     });
-                    res.writeHead(200, {"content-type": "application/json"});
-                    res.end(data2);
+                    if(res) {
+                        res.writeHead(200, {"content-type": "application/json"});
+                        res.end(data2);
+                    }
                     return console.log('No messages found ');
                 }
                 if(response === undefined)
@@ -179,8 +181,11 @@ module.exports = {
                 let data2 = JSON.stringify({
                     "data": mess_list
                 });
+                if(res){
                 res.writeHead(200, {"content-type": "application/json"});
                 res.end(data2);
+                }
+
                 resolve(messages_list);
                 //console.log('Aici in gmail.js la res.end la messages list');
             })
@@ -315,6 +320,7 @@ module.exports = {
                                         {
                                             html_resultat+=results[i];
                                         }
+                                        // noinspection JSDeprecatedSymbols
                                         fs.writeFile("./msg.rss",html_resultat, function(err) {
                                             if(err) {
                                                 return console.log(err);
@@ -363,6 +369,5 @@ module.exports = {
         res.end(data);
         //console.log('Aici in gmail.js');
     }
-
 }
 

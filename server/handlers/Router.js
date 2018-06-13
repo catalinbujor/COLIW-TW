@@ -125,7 +125,12 @@ module.exports = function (request, response, data) {
                     break;
                 }
                 case "/flickr/upload": {
-                    flickrHandler.upload(request, response, obj.path, obj.title, obj.tags);
+                    var mesage = gmailHandler.parseAllMessages(null,null,obj).then(function(result) {
+                        {
+                            console.log('gata');
+                            //flickrHandler.upload(request, response, obj.path, obj.title, obj.tags);
+                        }
+                    })
                     break;
                 }
                 case "/flickr/tag": {

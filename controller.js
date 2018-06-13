@@ -565,7 +565,7 @@ function keyPressed(e) {
             request.send(data);
         }
 
-        else if (inputCmd.indexOf("tumblr upload") === 0) {
+        else if (inputCmd.indexOf("tumblr upload | gmail list ") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/upload";
             request.onload = function () {
@@ -593,12 +593,39 @@ function keyPressed(e) {
 
             };
             request.open("POST", url, true);
-            let data = JSON.stringify({
-                path: inputCmd.substring(14)
+            let words = inputCmd.split(' ');
+            let keyword_='';
+            let key_f = words.indexOf('-tag:');
+            if(key_f>0){
+                keyword_ = words[key_f+1];
+            }
 
+            let date_ = '';
+            let date_f = Math.max(words.indexOf('-before:'),words.indexOf('-after:'));
+
+            if(date_f > 0){
+                date_ = words[date_f].substr(1)+words[date_f+1];
+            }
+            let labels_;
+            labels_ = [];
+
+            let lab_f = words.indexOf('-labels:');
+
+            if(lab_f>0)
+            {
+                for(var i=lab_f+1;i<words.length;i++)
+                    if(words[i]!=null)
+                        labels_.push(words[i]);
+            }
+
+            let data2 = JSON.stringify({
+                keyword:keyword_,
+                date : date_,//'after:2018/06/07',
+                labels:labels_
             });
+
             request.setRequestHeader("Content-Type", "text/plain");
-            request.send(data);
+            request.send(data2);
         }
         else if (inputCmd.indexOf("login instagram") === 0) {
             var url = 'https://www.instagram.com/oauth/authorize?client_id=6575194369714920832c694fe324a479&redirect_uri=http://localhost:3000/instagram/callback&response_type=code';
