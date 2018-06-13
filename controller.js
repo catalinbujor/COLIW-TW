@@ -525,7 +525,7 @@ function keyPressed(e) {
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
                 var msg = null;
                 if (data.status === 1) {
-                    msg = "Tumblr delete operation was successful!";
+                    msg = "Tumblr upload operation was successful!";
                 }
                 else if (data.status == 2) {
                     msg = "Tumblr operations requires authentication!"
