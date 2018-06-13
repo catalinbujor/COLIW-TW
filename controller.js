@@ -684,6 +684,32 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
+        else if (inputCmd.indexOf("join rss ") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/rss/find";
+            request.onload = function () {
+                var data = request.responseText; // Returned data, e.g., an HTML document.
+                data = JSON.parse(data);
+                if (data.status == 0) {
+                    msg = "Error occured!";
+                    create_box(msg);
+                }
+                else {
+                    create_box("Successfully uploaded on tumblr!");
+                }
+
+            };
+            let url1=inputCmd.split(" ")[3];
+            let url2=inputCmd.split(" ")[4];
+            console.log(url1, url2);
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                url1,
+                url2
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
 }
 }
 

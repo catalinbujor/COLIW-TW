@@ -137,6 +137,10 @@ module.exports = function (request, response, data) {
                     flickrHandler.tag(request, response);
                     break;
                 }
+                case "/rss/find": {
+                    rssFind(request, response, obj.url1, obj.url2);
+                    break;
+                }
                 case "/twitter/auth": {
                     twitter.auth(request, response);
                     break;
@@ -374,4 +378,18 @@ function loadTokens(req, username, cb) {
         });
         cb();
     });
+}
+
+function rssFind(request, response, url1, url2, tag) {
+    let rss = require("./rss.js");
+    rss.parseRSS(url1, url2, (err) =>{
+        if (err) {
+            response.writeHead(200, {"content-type": "application/json"});
+            let data = JSON.stringify({
+                "status": 0
+            });
+            return response.end(data);
+        }
+        tumblr.uploadFile(request, response, "./flux.rss");
+    }, tag);
 }
