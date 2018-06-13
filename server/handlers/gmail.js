@@ -6,6 +6,20 @@ const {google} = require('googleapis');
 
 let map = [];
 
+let async = require('async');
+/**
+ *
+ * @param items An array of items.
+ * @param fn A function that accepts an item from the array and returns a promise.
+ * @returns {Promise}
+ */
+function forEachPromise(items, fn) {
+    return items.reduce(function (promise, item) {
+        return promise.then(function () {
+            return fn(item);
+        });
+    }, Promise.resolve());
+}
 
 let messages_list = [];
 
@@ -92,7 +106,7 @@ listLabels : function (auth,req,res)  {
       console.log('Labels:');
       labels.forEach((label) => {
        // console.log(`- ${label.name}`);
-        map[label.name]=label.id;
+        module.exports.label_map[label.name]=label.id;
         labels_list += ` ${label.name} \n\r`;
       });
     } else {
@@ -216,7 +230,60 @@ listMessages : function (auth,req,res,keyword,labels,date){
     });
     },
 
-    parseAllMessages: function(req,res,obj){
+    getMessageInfo : function(auth,messageId){
+        return new Promise(resolve => {
+                process.nextTick(() => {
+                    let get = module.exports.getMessage(auth, messageId);
+                    get.then(function (messagejson) {
+                        console.log(JSON.stringify(messagejson));
+                        let parse_message = module.exports.parseMessage(messagejson);
+                        parse_message.then(function (compressed_message) {
+                            console.log(JSON.stringify(compressed_message));
+                            let addElement = module.exports.addHTMLelement(compressed_message);
+                            addElement.then(function (htmlelement) {
+                                console.log(htmlelement);
+                                resolve(htmlelement);
+                            })
+                        })
+                    })
+                });
+        })
+    },
+
+    addHTMLelement : function (msgcompresat) {
+        //console.log(JSON.stringify(mesajRez));
+            return new Promise(resolve => {
+                let html_resultat ='';
+                html_resultat += '<div>\n';
+                html_resultat += '<h2 id = "inner"> Subject:<b>' + msgcompresat.subject + '</b></h2>';
+                html_resultat += '</div>\n';
+
+                html_resultat += '<div>\n';
+                html_resultat += '<p id = "inner"> Data:<i>' + msgcompresat.data + '</i></p>';
+                html_resultat += '</div>\n';
+
+                html_resultat += '<div>\n';
+                html_resultat += '<p id = "inner"> From :<i>' + msgcompresat.from + '</i></p>';
+                html_resultat += '</div>\n';
+
+                html_resultat += '<div>\n';
+                html_resultat += '<p id = "inner"> Delivered to :<i>' + msgcompresat.deliveredTo + '</i></p>';
+                html_resultat += '</div>\n';
+
+                html_resultat += '<div>\n';
+                html_resultat += '<p id = "actualmessage">' + msgcompresat.base + '</p>';
+                html_resultat += '</div>\n';
+
+                html_resultat += '<div>\n';
+                html_resultat += '<p id = "actualmessage">' + '---------------------' + '</p>';
+                html_resultat += '</div>\n';
+
+                resolve(html_resultat);
+            });
+            },
+
+
+    parseAllMessages : function(req,res,obj){
         return new Promise(resolve => {
             let html_resultat='';
 
@@ -227,57 +294,56 @@ listMessages : function (auth,req,res,keyword,labels,date){
                     if(obj.labels.length > 0)
                     {
                         for(var i=0;i<obj.labels.length;i++)
-                            hashed_labels.push(exports.label_map[obj.labels[i]]);
+                            hashed_labels.push(module.exports.label_map[obj.labels[i]]);
                     }
                     else hashed_labels = obj.labels;
                     //  console.log('Hashed '+hashed_labels);
-
+                    let promise_messages=[];
                     var listate = module.exports.listMessages(module.exports.oauth2Client,req,res,obj.keyword,hashed_labels,obj.date);//'pisica',[],'after:2018/06/07');
                     listate.then(function(messages){
                         if(messages) {
-                            //console.log("messages "+messages);
+                            console.log("messages + "+messages);
 
-                            for(var i=0;i<messages.length;i++)
-                            {
-                                //console.log('ID '+messages[i]);
-                                var mesaj = module.exports.getMessage(module.exports.oauth2Client,messages[i]);
-                                mesaj.then(function (mesajRez) {
-                                    //console.log(JSON.stringify(mesajRez));
-                                    let compresat = module.exports.parseMessage(mesajRez);
-                                    compresat.then(function(msgcompresat){
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<h2 id = "inner"> Subject:<b>'+msgcompresat.subject+'</b></h2>';
-                                    html_resultat+='</div>\n';
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<p id = "inner"> Data:<i>'+msgcompresat.data+'</i></p>';
-                                    html_resultat+='</div>\n';
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<p id = "inner"> From :<i>'+msgcompresat.from+'</i></p>';
-                                    html_resultat+='</div>\n';
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<p id = "inner"> Delivered to :<i>'+msgcompresat.deliveredTo+'</i></p>';
-                                    html_resultat+='</div>\n';
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<p id = "actualmessage">'+msgcompresat.base+'</p>';
-                                    html_resultat+='</div>\n';
-
-                                    html_resultat+='<div>\n';
-                                    html_resultat+='<p id = "actualmessage">'+'---------------------'+'</p>';
-                                    html_resultat+='</div>\n';
-                                    })
-
-
+                            async.map(messages,function(message,cb){
+                                module.exports.getMessageInfo(module.exports.oauth2Client,message).then(function(bucata){
+                                    cb(null,bucata);
                                 });
 
-                            }
+
+                            },
+                                function(err,results){
+                                {
+                                    for(var i=0;i<results.length;i++)
+                                    {
+                                        html_resultat+=results[i];
+                                    }
+                                    fs.writeFile("./msg.rss",html_resultat, function(err) {
+                                        if(err) {
+                                            return console.log(err);
+                                        }
+                                        resolve("The file was saved!");
+                                    });
+                                }
+                                });
 
 
+                           /* forEachPromise(items, module.exports.getMessageInfo).then(() => {
+                                console.log('done');
+                            })*/
 
+                            //promise_messages.push(mesaj);
+                           /* for(var i=0;i<messages.length;i++)
+                            {
+                                //console.log('ID '+messages[i]);
+                                var mesaj = module.exports.getMessageInfo(module.exports.oauth2Client,messages[i]);
+                                // mesaj.then(function(fulfilled){
+                                //     console.log(JSON.stringify(fulfilled));
+                                // });
+                                promise_messages.push(mesaj);
+                            }*/
+                            /*Promise.all(promise_messages,function(fulfilled){
+                                console.log("lelel "+JSON.stringify(fulfilled));
+                            })*/
                         }
                     })
                 });

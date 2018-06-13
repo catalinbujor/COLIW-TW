@@ -108,7 +108,7 @@ http.createServer(function (req, res) {
                         obj.labels=null;
 
                     var parsate = gmailHandler.parseAllMessages(res,res,obj);
-                    parsate.then(function(){
+                    parsate.then(function(rezultat){
                         console.log("gata");
                     });
                     //console.log("Labels "+obj.labels);

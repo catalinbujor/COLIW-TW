@@ -246,7 +246,7 @@ function keyPressed(e) {
             if(date_f > 0){
                 date_ = words[date_f].substr(1)+words[date_f+1];
             }
-            let labels_ = '';
+            let labels_;
             labels_ = [];
 
             let lab_f = words.indexOf('-labels:');
@@ -255,7 +255,7 @@ function keyPressed(e) {
             {
                 for(var i=lab_f+1;i<words.length;i++)
                     if(words[i]!=null)
-                    labels_.push(words[i]);
+                        labels_.push(words[i]);
             }
 
             let data2 = JSON.stringify({
