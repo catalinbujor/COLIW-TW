@@ -2,6 +2,8 @@ const config = require("./config");
 const request = require("request");
 const qs = require("querystring");
 const fs= require("fs");
+const instagramHandler = require("./instagram");
+
 global.tumblr = {};
 
 function LoginError(res, req) {
@@ -78,7 +80,7 @@ function UserError(user,res) {
 exports.follow = function (req, res, user) {
     let tumblrInfo = req.session.get("tumblr");
     if (!tumblrInfo) {
-        tumblrInfo = global.tumblr.access;
+        tumblrInfo = global.tumblr.acces;
     }
 
     let data ={ status :0};
@@ -286,8 +288,6 @@ exports.deletePost=function(req,res,nrofPost)
 
 
 
-
-
 exports.uploadFile=function(req,res,path)
 {
     let tumblrInfo = req.session.get("tumblr");
@@ -338,8 +338,77 @@ exports.uploadFile=function(req,res,path)
             res.end(data);
         });
     });
+}
 
+
+exports.update=function(req,res)
+{
+
+    let instaInfo = req.session.get("instagram");
+    if (!instaInfo) {
+        instaInfo = global.instagram.acces;
+    }
+    if(typeof  instaInfo === undefined)
+    {
+        let data = {status: 2};
+        data = JSON.stringify(data);
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+        return ;
+    }
+    if(LoginError(res,req))
+    {
+        return;
+    }
+    var url = "https://api.instagram.com/v1/users/self/?access_token=" + instaInfo;
+    request.get(url, function (error, response) {
+        if (error !== null) {
+            let data = {status: 2};
+            data = JSON.stringify(data);
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return;
+        }
+        let data = JSON.parse(response.body);
+        let source=data.data.profile_picture;
+
+
+        let tumblr = require('tumblr.js');
+        let  client = tumblr.createClient({
+            consumer_key: config.tumblr_api_key,
+            consumer_secret: config.tumblr_api_secret,
+            token: tumblrInfo.oauth_token,
+            token_secret: tumblrInfo.oauth_token_secret
+        });
+        let userBlog = "coliwblog";
+        let params={
+            source:source,
+            caption:'test'
+
+        }
+        client.createPhotoPost(userBlog,params,function(err, data) {
+            if(err != null)
+            {
+                var data ={status :0};
+                data.status=3;
+                data = JSON.stringify(data);
+                res.writeHead(200, {"content-type": "application/json"});
+                res.end(data);
+                return;
+            }
+            else {
+                var data ={status :0};
+                data.status = 1;
+                data = JSON.stringify(data);
+                res.writeHead(200, {"content-type": "application/json"});
+                res.end(data);
+
+            }
+        });
+    })
 
 }
+
+
 
 

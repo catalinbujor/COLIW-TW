@@ -2,7 +2,6 @@ let request = require('request');
 const config = require('./config');
 global.instagram = {};
 
-
 function LoginError(res, req) {
     let instaInfo = req.session.get("instagram");
     if (global.instagram.acces === undefined && instaInfo === undefined) {
@@ -25,7 +24,6 @@ exports.lets_verify = function (verifier) {
             grant_type: 'authorization_code'
         }
     }, function (err, httpResponse, body) {
-
         var acces_token = (JSON).parse(body);
         global.instagram.acces = acces_token.access_token;
         let url = "http://localhost:8001/users/add_token";
@@ -141,6 +139,9 @@ exports.getTag = function (req, res, tagName) {
     })
 
 };
+
+
+
 
 
 

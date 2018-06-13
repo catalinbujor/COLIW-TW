@@ -136,6 +136,12 @@ module.exports = function (request, response, data) {
                     twitter.auth(request, response);
                     break;
                 }
+                //Testing
+                case "/tumblr/update": {
+                    tumblr.update(request, response);
+                    break;
+                }
+                //Testing
                 case "/twitter/tweet": {
                     twitter.tweet(request, response, obj.message);
                     break;
