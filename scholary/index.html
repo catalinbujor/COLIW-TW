@@ -67,8 +67,21 @@
                 <p><a href="https://nodejs.org/en/">NodeJS</a> ofera o gama larga de beneficii in dezvoltarea aplicatiilor server-side.Prin natura sa asincrona ofera rapiditate si stabilitate asupra operatiilor I/O (nonblocking) cat si o integrare cu API-urile web facilizata de librariile specifice puse la dispozitie de dezvolatatori. </p>
             </li>
             <li>
-                <p><a href="https://www.tumblr.com/docs/en/api/v2">Tumblr api</a> este o librarie social media foarte flexibila ce ofera o gama larga de functionalitati ce sunt utilizate de Coliw.</p>
+                <p><a href="https://www.tumblr.com/docs/en/api/v2">Tumblr api</a> ofera o librarie social media foarte flexibila ce ofera o gama larga de functionalitati ce sunt utilizate de Coliw.</p>
             </li>
+            <li>
+                <p><a href="https://developers.google.com/apis-explorer/">Google apis</a> este o librarie social media foarte flexibila ce ofera o gama larga de functionalitati ce sunt utilizate de Coliw in cadrul prelucrarii mail-urilor in format rss.Prezinta functii facile pentru search si GET .</p>
+            </li>
+            <li>
+                <p><a href="https://developer.twitter.com/en/docs.html">Twitter api </a> este o ofera social media foarte flexibila ce ofera o gama larga de functionalitati ce sunt utilizate de Coliw.</p>
+            </li>
+           
+            <li>
+                <p><a href="https://www.flickr.com/services/api/">Flickr api </a> este o librarie social media foarte flexibila ce ofera o gama larga de functionalitati ce sunt utilizate de Coliw.</p>
+            </li>
+            
+
+
             <li>
                 <p><a href="https://www.instagram.com/developer/">Instagram Api</a> Tumblr api</a> este o librarie social media foarte flexibila ce ofera o gama de functionalitati de tip GET ce sunt utilizate de Coliw.</p>
             </li>
@@ -140,37 +153,37 @@
                         Fiind o apicatie web orientata pe micro servicii, fiecare functionalitate exista intr-un server separat.Astfel, o interogare va apela la o entitate diferita, dupa capabilitatile acesteia.Dupa ce aceasta este returnata cu succes, sesiunea userului se updateaza(daca userul este logat si exista sesiune).
                     </p>
                 </li>
+                <li>
+				<p>        
+                    <strong>Comanda </strong> Este prelucrata de catre httpServer din inputul clientului se formeaza un request.
+                </p>
+            </li>
+                <li>
+				<p>        
+                    <strong>Routerul </strong> Redirectioneaza requestul luat de la httpServer catre handlere(tumblr , gmail  etc) sau catre microservici(twitter, db);
+                </p>
+            </li>
 
 				<li>
 				<p>        
                     <strong>Main View </strong> La fiecare comanda tastata, se creeaza un nou obiect de tipul terminal.
                 </p>
             </li>
-                </figcaption>
+                
             </figure>
                 <li>
                     <p>
-                        The user must register and generate a JWT before using the REST API exposed by MuSeR. Every subsequent call of the API will require the token.
+                        Userul trebuie sa se inregistreze pe aplicatia COLIW daca doreste sa beneficieze de featureruile complete ale aplicatiei.Astfel,odata logat, toti tokenii OAuth rezultati din logarea pe diverse servicii(flickr,tumblr etc) vor fi pastrati in baza de date.
                     </p>
                 </li>
 
                 <li>
                     <p>
-                        The 'preferred' data transfer MIME type of MuSeR is <code>application/json</code> for the ease of use and the nice integration with Javascript and NodeJS.
+                        The 'preferred' data transfer MIME type of Coliw is <code>application/json</code> for the ease of use and the nice integration with Javascript and NodeJS.
                     </p>
                 </li>
 
-                <li>
-                    <p>
-                        Each instance's view for an entity type (e.g. an Artist or a Song) will smartly suggest other instances of the same entity type taking into consideration different aspects related to it: genre, time period, preferences etc.
-                    </p>
-                </li>
-
-                <li>
-                    <p>
-                        Playlists can be accessed via a SPARQL endpoint that will provide a way of accessing the data from the RDF Storage (GraphDB). They can also be imported into / exported from MuSeR under the JSPF format.
-                    </p>
-                </li>
+               
             </ul>
 
             </section>
@@ -179,8 +192,10 @@
             <h2>Use-Cases</h2>
 
             <figure typeof="sa:Image">
+                Un utilizator logat  scrie comanda “flickr download photo -tag bird -first | flickr upload photo” si primeste Succes/fail.
                 <img src="./public/resources/image1.png">
-                <img src="./public/resources/image6.jpg">
+    			Un utilizator neautentificatt se logheaza in aplicatia noastra,care automat produce logarea la api-urile folosite de acesta in trecut, de asemenea acesta poate consulta side-bar-ul ca apoi sa execute o comanda.
+                <img src="./public/resources/image6.jpg">   
                 <img src="./public/resources/image7.jpg">
                 <figcaption>
                     <center>Use-Case diagram</center>
@@ -192,6 +207,7 @@
             <h2>Conclusion & Future considerations</h2>
             <p>
                 COLIW a fost realizat pentru a oferi utilizatorilor un mod de a rula comenzi ce manipuleaza date de pe librarii sociale prin intermediul browserului.
+                Aplicatia este usor extensibila , aceasta putand fi imbunatatita in diferite metode prin inventarea de mecanisme noi si idei arhitecturale.
             </p>
           
         </section>
@@ -247,7 +263,7 @@
 </article>
 <footer>
     <p>
-         Terminal for browser.
+         Command Line for Web.
         •
         <a href="https://www.info.uaic.ro/bin/Main/">
             <img src="https://www.info.uaic.ro/skins/fii/logo_fii3.png" height="20px">
