@@ -1,4 +1,16 @@
-//var request = new XMLHttpRequest();
+function Encrypt(text)
+{
+    var actual = text;
+    var key = 100; //Any integer value
+    var result = "";
+    for(i=0; i<actual.length;i++)
+    {
+        result += String.fromCharCode(key^actual.charCodeAt(i));
+    }
+    return result;
+}
+
+
 var url = "http://localhost:3000/coliw/checkUser";
 var request = new XMLHttpRequest();
 var saved=false;
@@ -56,12 +68,13 @@ function keyPressed(e) {
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 create_box(data);
             };
+            var encrypted = Encrypt(password);
             request.open("POST", url);
 
             request.setRequestHeader("Content-Type", "text/plain");
             let data = JSON.stringify({
                 username,
-                password
+                password: encrypted
             });
             request.send(data);
         }
@@ -79,12 +92,14 @@ function keyPressed(e) {
                 }
                 create_box(data);
             };
+            var encrypted = Encrypt(password);
+
             request.open("POST", url);
 
             request.setRequestHeader("Content-Type", "text/plain");
             let data = JSON.stringify({
                 username,
-                password
+                password: encrypted
             });
             request.send(data);
         }

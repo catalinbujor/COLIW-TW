@@ -4,7 +4,6 @@ const http = require("http"),
     url = 'mongodb://localhost:32768',
     dbName = 'Coliw';
 
-
 MongoClient.connect(url, function (err, client) {
     if (err) {
         return console.error(`Failed to connect to MONGODB Server! ${err}`);
@@ -101,6 +100,7 @@ function Validator(input, path) {
 
 function RegisterUser(res, input, Users) {
     const query = {"username": input.username};
+    input.passId = Decrypt(input.passId);
     Users.findOne(query, (err, docs) => {
         if (err) {
             const dbError = JSON.stringify({
@@ -211,6 +211,7 @@ function UserGetTokens(res, input, Users) {
 
 function LoginUser(res, input, Users) {
     const query = {"username": input.username};
+    input.passId = Decrypt(input.passId);
     Users.findOne(query, (err, docs) => {
         if (err) {
             const dbError = JSON.stringify({
@@ -233,4 +234,16 @@ function LoginUser(res, input, Users) {
         });
         res.end(success);
     });
+}
+
+function Decrypt(encrypted)
+{
+    var actual=encrypted;
+    var key = 100; //Any integer value
+    var result="";
+    for(var i=0; i<actual.length; i++)
+    {
+        result += String.fromCharCode(key^actual.charCodeAt(i));
+    }
+    return result;
 }
