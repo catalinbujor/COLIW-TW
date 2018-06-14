@@ -117,6 +117,14 @@
                     <strong>Main View</strong> este view-ul de start al aplicatiei ce ofera utilizatorului posibilitatea de a consulta comenzi prin intermediului side-barului.De asemenea acesta are posibilitatea de a-si poate alege sablonul.
                 </figcaption>
             </figure>
+            
+				<figure typeof="sa:Image">
+                <img src="./public/resources/mocks/sidenav.jpg">
+                <figcaption>
+                    <strong>Sidenav</strong> utilizatorul consulta sidebarul si alege o comanda
+                </figcaption>
+            </figure>
+            
 
             <figure typeof="sa:Image">
                 <img src="./public/resources/mocks/insta.jpg">
@@ -124,16 +132,22 @@
                     <strong>Main View </strong> utilizatorul primeste raspuns direct in terminal la rularea comenzii.
                 </figcaption>
             </figure>
-
-        <section id="design-details">
             <h3>Design Details</h3>
+            <section id="design-details">
             <ul>
                 <li>
                     <p>
-                        Being a 'microservices-serverless-oriented' application, each functionality will dwell into a AWS Lambda. Each of it will interrogate different datasources upon the search request of an entity. After the result will be returned successfully, the entity instance will be saved in the MuSeR's RDF storage and interlinked with other entities.
+                        Fiind o apicatie web orientata pe micro servicii, fiecare functionalitate exista intr-un server separat.Astfel, o interogare va apela la o entitate diferita, dupa capabilitatile acesteia.Dupa ce aceasta este returnata cu succes, sesiunea userului se updateaza(daca userul este logat si exista sesiune).
                     </p>
                 </li>
 
+				<li>
+				<p>        
+                    <strong>Main View </strong> La fiecare comanda tastata, se creeaza un nou obiect de tipul terminal.
+                </p>
+            </li>
+                </figcaption>
+            </figure>
                 <li>
                     <p>
                         The user must register and generate a JWT before using the REST API exposed by MuSeR. Every subsequent call of the API will require the token.
