@@ -223,8 +223,7 @@ exports.createPostPhoto=function(req,res,source) {
     });
     let userBlog = "coliwblog";
     let params={
-        source:source,
-        caption:'test'
+        source:source
 
     }
     client.createPhotoPost(userBlog,params,function(err, data) {
@@ -316,6 +315,11 @@ exports.uploadFile=function(req,res,path)
                res.writeHead(200, {"content-type": "application/json"});
                res.end(data);
                return;
+           }
+           if(path === "./msg.rss")
+               path='Convos';
+           if (path === "./flux.rss") {
+               path = "Hot News:";
            }
         let atribute = {
             title: path,

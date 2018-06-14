@@ -1,11 +1,11 @@
 {
-  "flickr_api_key": "bd3113da9dd2f98732f354436524b95d",
-  "flickr_api_secret": "b4085df06868768a",
-  "twitter_api_key": "DoM3KZMm4QR9DMw3EyAziA4mz",
-  "twitter_api_secret": "jvX7LjZqUq85xGwemqXJzZTKEJwMddm26iC7dixPkbQGccMXHG",
-  "tumblr_api_key": "nniIvkpn5RV5HvNryE3e4xf9234IFGqDNfHj7ZamvYhDygEnJ3",
-  "tumblr_api_secret": "LQpvzqOc6kWh4Dd0QYLpsZNb2HGL7AnDaAedZyycZkcZ5vB1u5",
-  "instagram_api_key": "6575194369714920832c694fe324a479",
-  "instagram_api_secret": "63b6492c56b14ce4b0c4d95495b2f2a5",
-  "session_secret": "Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD"
+  "flickr_api_key": "",
+  "flickr_api_secret":  "",
+  "twitter_api_key": "",
+  "twitter_api_secret": "",
+  "tumblr_api_key": "",
+  "tumblr_api_secret": "",
+  "instagram_api_key": "",
+  "instagram_api_secret": "",
+  "session_secret": ""
 }

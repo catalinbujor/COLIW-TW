@@ -7,7 +7,14 @@ const flickrHandler = require("./flickr"),
     requestLib = require("request"),
     dbM = require("./dbModel"),
     fs = require("fs"),
+    config = require("./config.json"),
+    request = require("request"),
     tumblr = require("./tumblr");
+
+global.twitter = {};
+global.flickr = {};
+global.tumblr = {};
+global.instagram = {};
 
 const htmlContent = fs.readFileSync("../index.html", {encoding: "utf8"});
 const cssContent = fs.readFileSync("../css/topbar.css", {encoding: "utf8"});
@@ -16,6 +23,13 @@ const jsContent = fs.readFileSync("../controller.js", {encoding: "utf8"});
 module.exports = function (request, response, data) {
     let logged = request.session.get("logged"),
         username = request.session.get("username");
+    let apis = ["twitter", "flickr", "tumblr", "instagram"];
+    apis.forEach(api => {
+        let value = request.session.get(api);
+        if (!global[api] || Object.keys(global[api]) === 0) {
+            global[api] = value;
+        }
+    });
     if (logged === 1) {
         global.coliw.logged = 1;
         global.coliw.username = username;
@@ -45,11 +59,16 @@ module.exports = function (request, response, data) {
         response.end();
     }
     else if (request.url.indexOf("/twitter/callback") === 0) {
-        twitter.lets_verify(request.url.substring(request.url.indexOf("verifier") + 9));
-        response.writeHead(302, {
-            'Location': "http://localhost:3000"
+        let verifier = request.url.substring(request.url.indexOf("verifier") + 9);
+        twitterVerifier(response, verifier, (good) => {
+            if (good === false) {
+                return;
+            }
+            response.writeHead(302, {
+                'Location': "http://localhost:3000"
+            });
+            response.end();
         });
-        response.end();
     }
     else if (request.url.indexOf("/gmail/callback") === 0) {
         let auth_token = request.url.substring(request.url.indexOf("code") + 5);
@@ -90,6 +109,10 @@ module.exports = function (request, response, data) {
             if (request.url === "/coliw/checkUser") {
                 let logged = request.session.get("logged"),
                     username = request.session.get("username");
+                if (global.coliw.logged === 1) {
+                    logged = 1;
+                    username = global.coliw.username;
+                }
                 if (logged === 1) {
                     return loadTokens(request, username, () => response.end("@" + username));
                 }
@@ -125,12 +148,15 @@ module.exports = function (request, response, data) {
                     break;
                 }
                 case "/flickr/upload": {
-                    var mesage = gmailHandler.parseAllMessages(null,null,obj).then(function(result) {
-                        {
-                            console.log('gata');
-                            //flickrHandler.upload(request, response, obj.path, obj.title, obj.tags);
-                        }
-                    })
+                    flickrHandler.upload(request, response, obj.path, obj.title, obj.tags);
+                    break;
+                }
+                case "/flickr/tag_first": {
+                    flickrHandler.tagFirst(request, response, obj.tags);
+                    break;
+                }
+                case "/flickr/tag_last": {
+                    flickrHandler.tagLast(request, response, obj.tags);
                     break;
                 }
                 case "/flickr/tag": {
@@ -138,11 +164,15 @@ module.exports = function (request, response, data) {
                     break;
                 }
                 case "/rss/find": {
-                    rssFind(request, response, obj.url1, obj.url2);
+                    rssFind(request, response, obj.url1, obj.url2, obj.tag);
                     break;
                 }
                 case "/twitter/auth": {
-                    twitter.auth(request, response);
+                    twitterLogin(response);
+                    break;
+                }
+                case "/twitter/update_photo": {
+                    twitter.update_photo(request, response);
                     break;
                 }
                 //Testing
@@ -157,11 +187,25 @@ module.exports = function (request, response, data) {
 
                 //Testing
                 case "/twitter/tweet": {
-                    twitter.tweet(request, response, obj.message);
+                    twitter_tweet(response, obj.message, (err, body) => {
+                        if (err === false) {
+                            return;
+                        }
+                        response.writeHead(200, {"content-type": "application/json"});
+                        body = JSON.stringify(body);
+                        response.end(body);
+                    });
                     break;
                 }
                 case "/twitter/message": {
-                    twitter.message(request, response, obj.user, obj.text);
+                    twitter_message(response, obj.user, obj.text, (err, body) => {
+                        if (err === false) {
+                            return;
+                        }
+                        response.writeHead(200, {"content-type": "application/json"});
+                        body = JSON.stringify(body);
+                        response.end(body);
+                    });
                     break;
                 }
                 case "/twitter/get": {
@@ -198,19 +242,18 @@ module.exports = function (request, response, data) {
                 }
                 case "/gmail/list": {
                     console.log("aici");
-                    console.log("Keyword "+obj.keyword);
-                    if(obj.keyword == undefined)
+                    console.log("Keyword " + obj.keyword);
+                    if (obj.keyword == undefined)
                         obj.keyword = null;
-                    console.log("Data "+obj.date);
-                    if(obj.date == undefined)
-                    {
+                    console.log("Data " + obj.date);
+                    if (obj.date == undefined) {
                         obj.date = null;
                     }
-                    if(obj.labels == undefined)
-                        obj.labels=null;
+                    if (obj.labels == undefined)
+                        obj.labels = null;
 
-                    var parsate = gmailHandler.parseAllMessages(request,response,obj);
-                    parsate.then(function(rezultat){
+                    var parsate = gmailHandler.parseAllMessages(request, response, obj);
+                    parsate.then(function (rezultat) {
                         console.log("gata");
                     });
                     break;
@@ -248,6 +291,10 @@ module.exports = function (request, response, data) {
                     tumblr.uploadFile(request, response, obj.path);
                     break;
                 }
+                case "/gmail/tumblr": {
+                    gmailRssUp(request, response, obj);
+                    break;
+                }
                 default: {
                     response.writeHead(200, {"content-type": "text"});
                     response.write('Invalid path.');
@@ -276,6 +323,106 @@ function jsHandler(request, response) {
 function htmlHandler(request, response) {
     response.writeHead(200, {"Content-Type": "text/html"});
     response.end(htmlContent);
+}
+
+function twitterLogin(res) {
+    const form = {
+            "consumer_key": config.twitter_api_key,
+            "consumer_secret": config.twitter_api_secret
+        },
+        url = "http://localhost:8002/twitter/auth";
+    requestLib.post({url: url, json: form}, function (e, r, body) {
+        if (e || !body || typeof body.status === "undefined") {
+            let data = JSON.stringify({
+                "status": 0
+            });
+            res.writeHead(200, {"content-type": "application/json"});
+            return res.end(data);
+        }
+        let data = JSON.stringify({
+            "status": 1,
+            "uri": body.uri
+        });
+        global.twitter = body.twitter;
+        res.writeHead(200, {"content-type": "application/json"});
+        res.end(data);
+    });
+}
+
+function twitterVerifier(res, verifier, cb) {
+    const form = {
+            "app_key": config.twitter_api_key,
+            "app_secret": config.twitter_api_secret,
+            "oauth_token": global.twitter.oauth_token,
+            "oauth_secret": global.twitter.oauth_token_secret,
+            verifier
+        },
+        url = "http://localhost:8002/twitter/verifier";
+    requestLib.post({url: url, json: form}, function (e, r, body) {
+        if (e || !body || typeof body.status === "undefined") {
+            let data = JSON.stringify({
+                "status": 0
+            });
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            return cb(false);
+        }
+        global.twitter = body.perm_data;
+        let url = "http://localhost:8001/users/add_token";
+        if (global.coliw.logged === 1) {
+            let json = {
+                "username": global.coliw.username,
+                "token": "twitter",
+                "value": global.twitter
+            };
+            request.post({url: url, json}, () => {
+            });
+        }
+        cb();
+    });
+}
+
+function twitter_tweet(res, message, cb) {
+    const form = {
+            "app_key": config.twitter_api_key,
+            "app_secret": config.twitter_api_secret,
+            "userInfo": global.twitter,
+            message
+        },
+        url = "http://localhost:8002/twitter/tweet";
+    requestLib.post({url: url, json: form}, function (e, r, body) {
+        if (e || !body || typeof body.status === "undefined") {
+            let data = JSON.stringify({
+                "status": 0
+            });
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            cb("done");
+        }
+        cb(null, body);
+    });
+}
+
+function twitter_message(res, user, text, cb) {
+    const form = {
+            "app_key": config.twitter_api_key,
+            "app_secret": config.twitter_api_secret,
+            "userInfo": global.twitter,
+            user,
+            text
+        },
+        url = "http://localhost:8002/twitter/message";
+    requestLib.post({url: url, json: form}, function (e, r, body) {
+        if (e || !body || typeof body.status === "undefined") {
+            let data = JSON.stringify({
+                "status": 0
+            });
+            res.writeHead(200, {"content-type": "application/json"});
+            res.end(data);
+            cb("done");
+        }
+        cb(null, body);
+    });
 }
 
 function coliwLoginRequest(obj, req, res) {
@@ -382,7 +529,7 @@ function loadTokens(req, username, cb) {
 
 function rssFind(request, response, url1, url2, tag) {
     let rss = require("./rss.js");
-    rss.parseRSS(url1, url2, (err) =>{
+    rss.parseRSS(url1, url2, (err) => {
         if (err) {
             response.writeHead(200, {"content-type": "application/json"});
             let data = JSON.stringify({
@@ -393,3 +540,13 @@ function rssFind(request, response, url1, url2, tag) {
         tumblr.uploadFile(request, response, "./flux.rss");
     }, tag);
 }
+
+function gmailRssUp(request, response, obj) {
+
+    let parsate = gmailHandler.parseAllMessages(null, null, obj);
+    parsate.then(function () {
+        tumblr.uploadFile(request, response, './msg.rss');
+    });
+
+}
+

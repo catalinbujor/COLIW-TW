@@ -122,12 +122,43 @@ function keyPressed(e) {
                 console.log(JSON.stringify(data));
                 create_box(msg);
             };
-
+            let ititle = inputCmd.indexOf("-title ");
+            let itag = inputCmd.indexOf("-tag ");
+            let tags, title;
+            let lg;
+            if (ititle > 0 && itag > 0) {
+                if (ititle > itag) {
+                    title = inputCmd.substring(ititle+7);
+                    tags = inputCmd.substring(itag+5, ititle-1);
+                    tags = tags.split(",");
+                    lg=itag;
+                }
+                else {
+                    tags = inputCmd.substring(itag+5);
+                    tags = tags.split(",");
+                    title = inputCmd.substring(ititle+7, itag-1);
+                    lg=ititle;
+                }
+            }
+            else if (ititle > 0) {
+                title = inputCmd.substring(ititle+7);
+                lg=ititle;
+            }
+            else if (itag > 0) {
+                tags = inputCmd.substring(itag+5);
+                tags = tags.split(",");
+                lg=itag;
+            }
             request.open("POST", url, true);
-
+            let path = inputCmd.substring(14);
+            if (lg) {
+                path = inputCmd.substring(14, lg-1);
+            }
             request.setRequestHeader("Content-Type", "text/plain");
             let data = JSON.stringify({
-                "path": inputCmd.substring(14)
+                path,
+                title,
+                tags
             });
             request.send(data);
         }
@@ -135,16 +166,102 @@ function keyPressed(e) {
             // tag opt FLICKR
 
             var request = new XMLHttpRequest();
-            var url = "http://localhost:3000/flickr/tag";
+            var url = "http://localhost:3000/flickr/tag_first";
             request.onload = function () {
                 var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
                 var data = request.responseText; // Returned data, e.g., an HTML document.
-            }
+            };
 
             request.open("POST", url, true);
 
             request.setRequestHeader("Content-Type", "text/plain");
             request.send();
+        }
+        else if (inputCmd.indexOf("flickr -tag") === 0 && inputCmd.indexOf("-last") > 0 && inputCmd.endsWith("| tumblr upload")) {
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/flickr/tag_last";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Photo uploaded successfully on tumblr!";
+                }
+                else if (data.status === 0) {
+                    if (data.code === 309) {
+                        msg = "You don't have enough permissions. Please login again!";
+                    }
+                    else if (data.code === 310) {
+                        msg = "An error occured, please retry!";
+                    }
+                    else if (data.code === 311) {
+                        msg = "You must have at least 1 photo on flickr!"
+                    }
+                }
+                else if (data.status === 3){
+                    msg = "An error occured, please retry!";
+                }
+                else if (data.status === 2) {
+                    msg = "You don't have enough permissions. Please login again!";
+                }
+
+                console.log(JSON.stringify(data));
+                create_box(msg);
+            };
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            let itags = inputCmd.indexOf("-tag ");
+            let ifirst = inputCmd.indexOf("-last");
+            let data = JSON.stringify({
+                tags: inputCmd.substring(itags + 5, ifirst - 1)
+            });
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("flickr -tag") === 0 && inputCmd.indexOf("-first") > 0 && inputCmd.endsWith("| tumblr upload")) {
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/flickr/tag_first";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Photo uploaded successfully on tumblr!";
+                }
+                else if (data.status === 0) {
+                    if (data.code === 309) {
+                        msg = "You don't have enough permissions. Please login again!";
+                    }
+                    else if (data.code === 310) {
+                        msg = "An error occured, please retry!";
+                    }
+                    else if (data.code === 311) {
+                        msg = "You must have at least 1 photo on flickr!"
+                    }
+                }
+                else if (data.status === 3){
+                    msg = "An error occured, please retry!";
+                }
+                else if (data.status === 2) {
+                    msg = "You don't have enough permissions. Please login again!";
+                }
+
+                console.log(JSON.stringify(data));
+                create_box(msg);
+            };
+
+            request.open("POST", url, true);
+
+            request.setRequestHeader("Content-Type", "text/plain");
+            let itags = inputCmd.indexOf("-tag ");
+            let ifirst = inputCmd.indexOf("-first");
+            let data = JSON.stringify({
+                tags: inputCmd.substring(itags + 5, ifirst - 1)
+            });
+            request.send(data);
         }
         else if (inputCmd.indexOf("login twitter") === 0) {
             // LOGIN twitter
@@ -230,6 +347,35 @@ function keyPressed(e) {
             });
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
+        }
+        else if (inputCmd.indexOf("twitter upd") === 0) {
+            // twitter tweet
+
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/twitter/update_photo";
+            request.onload = function () {
+                var status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Message operation was successful!";
+                }
+                else if (data.errors.code === "ENOTFOUND") {
+                    msg = "Message operation requires authentication!";
+                }
+                else if (data.errors instanceof Array && data.errors.length > 0 && data.errors[0].code === 89) {
+                    msg = "Your token has expired! Please login again."
+                }
+                else {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                create_box(msg);
+            };
+
+            request.open("POST", url, true);
+            let data = JSON.stringify({});
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send();
         }
         else if (inputCmd.indexOf("twitter get") === 0) {
             var request = new XMLHttpRequest();
@@ -564,10 +710,44 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
-
-        else if (inputCmd.indexOf("tumblr upload | gmail list ") === 0) {
+        else if (inputCmd.indexOf("tumblr upload") === 0) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/tumblr/upload";
+            request.onload = function () {
+                var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
+                var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
+                var msg = null;
+                if (data.status === 1) {
+                    msg = "Tumblr upload operation was successful!";
+                }
+                else if (data.status == 2) {
+                    msg = "Tumblr operations requires authentication!"
+                }
+                else if(data.status == 3)
+                {
+                    msg="Oops something is wrong with the file !"
+                }
+                else if (data.status == 4) {
+                    msg = "Oops, an errors has occured! Please retry.!"
+                }
+                else if (data.status === 0) {
+                    msg = "Oops, an errors has occured! Please retry."
+                }
+                console.log(JSON.stringify(data.errors));
+                create_box(msg);
+
+            };
+            request.open("POST", url, true);
+            let data = JSON.stringify({
+                path: inputCmd.substring(14)
+
+            });
+            request.setRequestHeader("Content-Type", "text/plain");
+            request.send(data);
+        }
+        else if (inputCmd.indexOf("tumblr post | gmail list ") === 0) {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:3000/gmail/tumblr";
             request.onload = function () {
                 var status = request.status; // HTTP respo nse status, e.g., 200 for "200 OK"
                 var data = JSON.parse(request.responseText); // Returned data, e.g., an HTML document.
@@ -684,13 +864,13 @@ function keyPressed(e) {
             request.setRequestHeader("Content-Type", "text/plain");
             request.send(data);
         }
-        else if (inputCmd.indexOf("join rss ") === 0) {
+        else if (inputCmd.indexOf("join rss ") === 0 && inputCmd.endsWith(" | tumblr upload")) {
             var request = new XMLHttpRequest();
             var url = "http://localhost:3000/rss/find";
             request.onload = function () {
                 var data = request.responseText; // Returned data, e.g., an HTML document.
                 data = JSON.parse(data);
-                if (data.status == 0) {
+                if (data.status !== 1) {
                     msg = "Error occured!";
                     create_box(msg);
                 }
@@ -699,16 +879,27 @@ function keyPressed(e) {
                 }
 
             };
-            let url1=inputCmd.split(" ")[3];
-            let url2=inputCmd.split(" ")[4];
-            console.log(url1, url2);
+            let url1=inputCmd.split(" ")[2];
+            let url2=inputCmd.split(" ")[3];
+            let iWhere = inputCmd.indexOf("-where");
+            let tag;
+            if (iWhere > 0) {
+                tag = inputCmd.substring(iWhere).split(" ")[1];
+            }
+
             request.open("POST", url, true);
             let data = JSON.stringify({
                 url1,
-                url2
+                url2,
+                tag
             });
             request.setRequestHeader("Content-Type", "text/plain");
-            request.send(data);
+           request.send(data);
+        }
+
+
+        else {
+            create_box("Unknown command!");
         }
 }
 }

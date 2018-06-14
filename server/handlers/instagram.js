@@ -1,6 +1,5 @@
 let request = require('request');
 const config = require('./config');
-global.instagram = {};
 
 function LoginError(res, req) {
     let instaInfo = req.session.get("instagram");

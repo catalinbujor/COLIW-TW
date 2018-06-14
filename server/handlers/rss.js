@@ -15,12 +15,10 @@ rss_map['reddit']='https://www.reddit.com/.rss';
 rss_map['news.ro']='https://www.news.ro/rss';
 rss_map['sport.ro']='https://www.sport.ro/rss';
 
-exports.parseRSS= function(url1,ulr2,cb,tag){
+exports.parseRSS= function(url1,url2,cb,tag){
     (async () => {
-
-        let feed = await parser.parseURL('https://www.sport.ro/rss');//'https://www.reddit.com/.rss');
-        let feed2 = await parser.parseURL('https://www.reddit.com/.rss');
-        console.log(feed.title);
+        let feed = await parser.parseURL(url1);//'https://www.reddit.com/.rss');
+        let feed2 = await parser.parseURL(url2);
         let array=[];
         let result='';
         feed = feed.items.filter(item => item.title.indexOf(tag) > 0).map(item => {
